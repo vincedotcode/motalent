@@ -65,10 +65,6 @@ export function InstallModal({ onClose }: { onClose: () => void }) {
 
   return (
     <Drawer open={inactive} onClose={onClose}>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Click to Install</Button>
-      </DrawerTrigger>
-      <DrawerContent>
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader>
             <DrawerTitle>Install PWA</DrawerTitle>
@@ -91,7 +87,6 @@ export function InstallModal({ onClose }: { onClose: () => void }) {
             </DrawerClose>
           </DrawerFooter>
         </div>
-      </DrawerContent>
     </Drawer>
   );
 }

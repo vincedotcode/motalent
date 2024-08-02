@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { verifyEmail } from "@/services/auth";
@@ -9,63 +9,63 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { ModeToggle } from "@/helper/darkmode";
 import { ChevronLeft } from 'lucide-react';
+
 export default function VerifyEmail() {
     const router = useRouter();
     const { toast } = useToast();
     const [loading, setLoading] = useState(true);
-    const searchParams = useSearchParams()
-    const token = searchParams.get('token')
+    const searchParams = useSearchParams();
+    const token = searchParams.get('token');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-    console.log(token)
-
+    const isVerifying = useRef(false); // Ref to keep track of the verification status
 
     useEffect(() => {
-        if (token) {
-            verifyUserEmail(token);
-        }
-    }, [token]);
-
-    const verifyUserEmail = async (token: string) => {
-        try {
-            await verifyEmail(token);
-            toast({
-                title: "Success!",
-                description: "Email verified successfully!",
-                variant: "default",
-            });
-            setLoading(false);
-            router.push('/auth/login');
-        } catch (error: unknown) {
-            setLoading(false);
-            if (error instanceof Error) {
-                try {
-                    const errorDetails = JSON.parse(error.message);
-                    const message = Array.isArray(errorDetails.message) ? errorDetails.message.join(", ") : errorDetails.message;
-                    setErrorMessage(message || 'Failed to verify email');
+        const verifyUserEmail = async (token: string) => {
+            try {
+                await verifyEmail(token);
+                setLoading(false);
+                toast({
+                    title: "Success!",
+                    description: "Email verified successfully!",
+                    variant: "default",
+                });
+                router.push('/auth/login');
+            } catch (error: unknown) {
+                setLoading(false);
+                if (error instanceof Error) {
+                    try {
+                        const errorDetails = JSON.parse(error.message);
+                        const message = Array.isArray(errorDetails.message) ? errorDetails.message.join(", ") : errorDetails.message;
+                        setErrorMessage(message || 'Failed to verify email');
+                        toast({
+                            title: "Error",
+                            description: message || 'Failed to verify email',
+                            variant: "destructive",
+                        });
+                    } catch (jsonError) {
+                        setErrorMessage('Failed to verify email');
+                        toast({
+                            title: "Error",
+                            description: 'Failed to verify email',
+                            variant: "destructive",
+                        });
+                    }
+                } else {
+                    setErrorMessage('An unexpected error occurred');
                     toast({
                         title: "Error",
-                        description: message || 'Failed to verify email',
-                        variant: "destructive",
-                    });
-                } catch (jsonError) {
-                    setErrorMessage('Failed to verify email');
-                    toast({
-                        title: "Error",
-                        description: 'Failed to verify email',
+                        description: 'An unexpected error occurred',
                         variant: "destructive",
                     });
                 }
-            } else {
-                setErrorMessage('An unexpected error occurred');
-                toast({
-                    title: "Error",
-                    description: 'An unexpected error occurred',
-                    variant: "destructive",
-                });
             }
+        };
+
+        if (token && !isVerifying.current) {
+            isVerifying.current = true; // Mark as verifying to prevent multiple calls
+            verifyUserEmail(token);
         }
-    };
+    }, [token, router, toast]);
 
     return (
         <div className="flex flex-col items-center justify-center">
@@ -106,6 +106,5 @@ export default function VerifyEmail() {
                 </Card>
             </div>
         </div>
-
     );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { InstallModal } from "@/components/install-modal";
+import { InstallModal } from "@/components/pwa/install-modal";
 
 
 export function PWA() {

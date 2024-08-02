@@ -79,17 +79,21 @@ export default function SignUp() {
       console.log(response)
       toast({
         title: "Success!",
-        description: "Account created successfully!",
+        description: "Account created successfully! Please check your email to verify your account",
         variant: "default",
       });
       setLoading(false);
+      console.log(response)
       router.push('/');
     } catch (error: unknown) {
+      
       if (error instanceof Error) {
         setLoading(false);
         try {
           const errorDetails = JSON.parse(error.message);
           const message = Array.isArray(errorDetails.message) ? errorDetails.message.join(", ") : errorDetails.message;
+
+          console.log(message)
           toast({
             title: "Error",
             description: message || 'Failed to create an account',

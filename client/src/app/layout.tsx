@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/helper/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/react"
-import { PWA } from "@/pwa";
+import { PWA } from "@/components/pwa/pwa";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -44,7 +44,7 @@ export default function RootLayout({
       >
           <Analytics />
           {children}
-          <PWA />
+  
         </ThemeProvider>
         <Toaster />
       </body>
