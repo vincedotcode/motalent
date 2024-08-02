@@ -1,20 +1,19 @@
 "use client";
 
-import Link from "next/link"
+import Link from "next/link";
 import { ChevronLeft } from 'lucide-react';
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,50 +24,53 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
-import { useRouter } from 'next/navigation'
-import { login } from "@/services/auth";
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/components/ui/use-toast";
 import { LoadingButton } from '@/components/ui/loading-button';
-
+import { useSearchParams, useRouter } from 'next/navigation';
+import { resetPassword } from "@/services/auth";
 
 // Define the form validation schema using Zod
-const loginFormSchema = z.object({
-  email: z.string().nonempty({ message: "email is required" }),
+const resetPasswordFormSchema = z.object({
   password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
+  confirmPassword: z.string().min(6, { message: "Confirm password must be at least 6 characters long" }),
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
-type LoginFormValues = z.infer<typeof loginFormSchema>;
+type ResetPasswordFormValues = z.infer<typeof resetPasswordFormSchema>;
 
-
-
-export default function Login() {
-
-
-  const router = useRouter()
-  const [loginError, setLoginError] = useState<string | null>(null);
+export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
-  const { toast } = useToast()
+  const { toast } = useToast();
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
+  const router = useRouter();
 
-
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginFormSchema),
+  const form = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordFormSchema),
     defaultValues: {
-      email: "",
       password: "",
-    }
+      confirmPassword: "",
+    },
   });
 
-  const onSubmit: SubmitHandler<LoginFormValues> = async ({ email, password }) => {
+  const onSubmit: SubmitHandler<ResetPasswordFormValues> = async ({ password }) => {
     setLoading(true);
     try {
-      const response = await login({ email, password });
+      if (!token) {
+        throw new Error("Invalid or missing token");
+      }
+      await resetPassword(token, password);
       toast({
         title: "Success!",
-        description: "Account logged in successfully!",
+        description: "Password reset successfully!",
         variant: "default",
       });
-  
-      router.push('/');
+      setTimeout(() => {
+        router.push('/auth/login');
+      }, 2000); 
+      form.reset();
     } catch (error: unknown) {
       if (error instanceof Error) {
         try {
@@ -76,13 +78,13 @@ export default function Login() {
           const message = Array.isArray(errorDetails.message) ? errorDetails.message.join(", ") : errorDetails.message;
           toast({
             title: "Error",
-            description: message || 'Failed to create an account',
+            description: message || 'Failed to reset password',
             variant: "destructive",
           });
         } catch (jsonError) {
           toast({
             title: "Error",
-            description: 'Failed to create login',
+            description: 'Failed to reset password',
             variant: "destructive",
           });
         }
@@ -94,15 +96,13 @@ export default function Login() {
         });
       }
     } finally {
-      form.reset();
       setLoading(false);
     }
   };
 
-
   return (
-    <div className=" h-screen">
-      <div className="flex items-center justify-center flex-col ">
+    <div className="h-screen">
+      <div className="flex items-center justify-center flex-col">
         <div className="self-start mb-16 mt-3 flex justify-between w-full">
           <Link href="/">
             <Button className="mx-3">
@@ -113,11 +113,11 @@ export default function Login() {
             <ModeToggle />
           </div>
         </div>
-        <Card className="mx-auto max-w-sm">
+        <Card className="mx-auto max-w-sm w-full">
           <CardHeader>
-            <CardTitle className="text-2xl">Login</CardTitle>
+            <CardTitle className="text-2xl">Reset Password</CardTitle>
             <CardDescription>
-              Enter your email below to login to your account
+              Enter your new password below.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -125,12 +125,12 @@ export default function Login() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="password"
                   render={({ field, fieldState }) => (
                     <FormItem>
-                      <FormLabel>username</FormLabel>
+                      <FormLabel>New Password</FormLabel>
                       <FormControl>
-                        <Input {...field} type="username" placeholder="example@example.com" />
+                        <Input {...field} type="password" placeholder="New Password" />
                       </FormControl>
                       {fieldState.error && (
                         <FormMessage>{fieldState.error.message}</FormMessage>
@@ -140,12 +140,12 @@ export default function Login() {
                 />
                 <FormField
                   control={form.control}
-                  name="password"
+                  name="confirmPassword"
                   render={({ field, fieldState }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>Confirm Password</FormLabel>
                       <FormControl>
-                        <Input {...field} type="password" placeholder="Password" />
+                        <Input {...field} type="password" placeholder="Confirm Password" />
                       </FormControl>
                       {fieldState.error && (
                         <FormMessage>{fieldState.error.message}</FormMessage>
@@ -153,19 +153,11 @@ export default function Login() {
                     </FormItem>
                   )}
                 />
-                {loginError && (
-                  <FormItem>
-                    <FormDescription className="text-red-500">{loginError}</FormDescription>
-                  </FormItem>
-                )}
                 <div className="flex justify-center">
-                  <LoadingButton type="submit" className="w-full" loading={loading}>Login</LoadingButton>
+                  <LoadingButton type="submit" className="w-full" loading={loading}>Reset Password</LoadingButton>
                 </div>
                 <div className="mt-4 text-center">
-                  <Link href="/auth/forgot" className="text-sm underline">Forgot password?</Link>
-                </div>
-                <div className="text-center text-sm">
-                  Don’t have an account? <Link href="/auth/signup" className="underline">Sign up</Link>
+                  <Link href="/auth/login" className="text-sm underline">Back to Login</Link>
                 </div>
               </form>
             </Form>
@@ -173,6 +165,5 @@ export default function Login() {
         </Card>
       </div>
     </div>
-
-  )
+  );
 }

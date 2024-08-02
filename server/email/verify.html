@@ -1,242 +1,97 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" lang="en">
+
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Verify your email address</title>
-  <style type="text/css" rel="stylesheet" media="all">
-    /* Base ------------------------------ */
-    *:not(br):not(tr):not(html) {
-      font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
-      -webkit-box-sizing: border-box;
-      box-sizing: border-box;
-    }
-    body {
-      width: 100% !important;
-      height: 100%;
-      margin: 0;
-      line-height: 1.4;
-      background-color: #F5F7F9;
-      color: #839197;
-      -webkit-text-size-adjust: none;
-    }
-    a {
-      color: #3576DF;
+  <meta content="width=device-width" name="viewport" />
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+  <meta name="x-apple-disable-message-reformatting" />
+  <meta content="telephone=no,address=no,email=no,date=no,url=no" name="format-detection" />
+  <meta content="light" name="color-scheme" />
+  <meta content="light" name="supported-color-schemes" />
+  <style>
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      mso-font-alt: 'sans-serif';
+      src: url(https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19) format('woff2');
     }
 
-    /* Layout ------------------------------ */
-    .email-wrapper {
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      background-color: #F5F7F9;
+    * {
+      font-family: 'Inter', sans-serif;
     }
-    .email-content {
-      width: 100%;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* Masthead ----------------------- */
-    .email-masthead {
-      padding: 25px 0;
-      text-align: center;
-    }
-    .email-masthead_logo {
-      max-width: 400px;
-      border: 0;
-    }
-    .email-masthead_name {
-      font-size: 16px;
-      font-weight: bold;
-      color: #839197;
-      text-decoration: none;
-      text-shadow: 0 1px 0 white;
-    }
-
-    /* Body ------------------------------ */
-    .email-body {
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      border-top: 1px solid #E7EAEC;
-      border-bottom: 1px solid #E7EAEC;
-      background-color: #FFFFFF;
-    }
-    .email-body_inner {
-      width: 570px;
-      margin: 0 auto;
-      padding: 0;
-    }
-    .email-footer {
-      width: 570px;
-      margin: 0 auto;
-      padding: 0;
-      text-align: center;
-    }
-    .email-footer p {
-      color: #839197;
-    }
-    .body-action {
-      width: 100%;
-      margin: 30px auto;
-      padding: 0;
-      text-align: center;
-    }
-    .body-sub {
-      margin-top: 25px;
-      padding-top: 25px;
-      border-top: 1px solid #E7EAEC;
-    }
-    .content-cell {
-      padding: 35px;
-    }
-    .align-right {
-      text-align: right;
-    }
-
-    /* Type ------------------------------ */
-    h1 {
+  </style>
+  <style>
+    blockquote,
+    h1,
+    h2,
+    h3,
+    img,
+    li,
+    ol,
+    p,
+    ul {
       margin-top: 0;
-      color: #292E31;
-      font-size: 19px;
-      font-weight: bold;
-      text-align: left;
-    }
-    h2 {
-      margin-top: 0;
-      color: #292E31;
-      font-size: 16px;
-      font-weight: bold;
-      text-align: left;
-    }
-    h3 {
-      margin-top: 0;
-      color: #292E31;
-      font-size: 14px;
-      font-weight: bold;
-      text-align: left;
-    }
-    p {
-      margin-top: 0;
-      color: #839197;
-      font-size: 16px;
-      line-height: 1.5em;
-      text-align: left;
-    }
-    p.sub {
-      font-size: 12px;
-    }
-    p.center {
-      text-align: center;
-    }
-
-    /* Buttons ------------------------------ */
-    .button {
-      display: inline-block;
-      width: 200px;
-      background-color: #3576DF;
-      border-radius: 3px;
-      color: #ffffff;
-      font-size: 15px;
-      line-height: 45px;
-      text-align: center;
-      text-decoration: none;
-      -webkit-text-size-adjust: none;
-      mso-hide: all;
-    }
-    .button--green {
-      background-color: #28DB67;
-    }
-    .button--red {
-      background-color: #FF3665;
-    }
-    .button--blue {
-      background-color: #3576DF;
-    }
-
-    /*Media Queries ------------------------------ */
-    @media only screen and (max-width: 600px) {
-      .email-body_inner,
-      .email-footer {
-        width: 100% !important;
-      }
-    }
-    @media only screen and (max-width: 500px) {
-      .button {
-        width: 100% !important;
-      }
+      margin-bottom: 0
     }
   </style>
 </head>
+
 <body>
-  <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0">
-    <tr>
-      <td align="center">
-        <table class="email-content" width="100%" cellpadding="0" cellspacing="0">
-          <!-- Logo -->
-          <tr>
-            <td class="email-masthead">
-              <a class="email-masthead_name">motalent</a>
-            </td>
-          </tr>
-          <!-- Email Body -->
-          <tr>
-            <td class="email-body" width="100%">
-              <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0">
-                <!-- Body content -->
-                <tr>
-                  <td class="content-cell">
-                    <h1>Verify your email address</h1>
-                    <p>Thanks for signing up for motalent! We're excited to have you as an early user.</p>
-                    <!-- Action -->
-                    <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td align="center">
-                          <div>
-                            <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{action_url}}" style="height:45px;v-text-anchor:middle;width:200px;" arcsize="7%" stroke="f" fill="t">
-                            <v:fill type="tile" color="#3576DF" />
-                            <w:anchorlock/>
-                            <center style="color:#ffffff;font-family:sans-serif;font-size:15px;">Verify Email</center>
-                          </v:roundrect><![endif]-->
-                            <a href="{{action_url}}" class="button button--blue">Verify Email</a>
-                          </div>
-                        </td>
-                      </tr>
-                    </table>
-                    <p>Thanks,<br>The motalent Team</p>
-                    <!-- Sub copy -->
-                    <table class="body-sub">
-                      <tr>
-                        <td>
-                          <p class="sub">If you’re having trouble clicking the button, copy and paste the URL below into your web browser.
-                          </p>
-                          <p class="sub"><a href="{{action_url}}">{{action_url}}</a></p>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <table class="email-footer" align="center" width="570" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td class="content-cell">
-                    <p class="sub center">
-                      motalent Inc.
-                      <br>325 9th St, San Francisco, CA 94103
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+  <div style="display:none;overflow:hidden;line-height:1px;opacity:0;max-height:0;max-width:0"
+    id="__react-email-preview">MoTalent Account Verification<div>
+       ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿
+    </div>
+  </div>
+  <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation"
+    style="max-width:600px;min-width:300px;width:100%;margin-left:auto;margin-right:auto;padding:0.5rem">
+    <tbody>
+      <tr style="width:100%">
+        <td>
+          <h2
+            style="text-align:left;color:rgb(17, 24, 39);margin-bottom:12px;margin-top:0px;font-size:30px;line-height:36px;font-weight:700">
+            <strong>Welcome to MoTalent</strong></h2>
+          <p
+            style="font-size:15px;line-height:24px;margin:16px 0;text-align:left;margin-bottom:20px;margin-top:0px;color:rgb(55, 65, 81);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
+            Are you ready to transform your career? Thank you for joining MoTalent, a new and upcoming website with some
+            amazing upcoming features.</p>
+          <p
+            style="font-size:15px;line-height:24px;margin:16px 0;text-align:left;margin-bottom:20px;margin-top:0px;color:rgb(55, 65, 81);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
+            Click below to confirm your account:</p>
+          <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation"
+            style="max-width:100%;text-align:left;margin-bottom:0px">
+            <tbody>
+              <tr style="width:100%">
+                <td><a href="{{action_url}}"
+                    style="color:#ffffff;background-color:#141313;border-color:#141313;padding:12px 34px 12px 34px;border-width:2px;border-style:solid;text-decoration:none;font-size:14px;font-weight:500;border-radius:9999px;line-height:100%;display:inline-block;max-width:100%"
+                    target="_blank"><span><!--[if mso]><i style="letter-spacing: 34px;mso-font-width:-100%;mso-text-raise:18" hidden>&nbsp;</i><![endif]--></span><span
+                      style="max-width:100%;display:inline-block;line-height:120%;mso-padding-alt:0px;mso-text-raise:9px">Verify
+                      Account</span><span><!--[if mso]><i style="letter-spacing: 34px;mso-font-width:-100%" hidden>&nbsp;</i><![endif]--></span></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation"
+            style="max-width:37.5em;height:64px">
+            <tbody>
+              <tr style="width:100%">
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <p
+            style="font-size:15px;line-height:24px;margin:16px 0;text-align:left;margin-bottom:20px;margin-top:0px;color:rgb(55, 65, 81);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
+            Don&#x27;t forget, this is a one man project - some things might be buggy but don&#x27;t worry, reach our to
+            me anytime and let&#x27;s fix these issues together.</p>
+          <p
+            style="font-size:15px;line-height:24px;margin:16px 0;text-align:left;margin-bottom:20px;margin-top:0px;color:rgb(55, 65, 81);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
+            Regards,<br />Vince - vincedotcode</p>
+        </td>
+      </tr>
+    </tbody>
   </table>
 </body>
+
 </html>

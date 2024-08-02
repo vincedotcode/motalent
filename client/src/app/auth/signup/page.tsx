@@ -306,8 +306,8 @@ export default function SignUp() {
             </Form>
           </CardContent>
         </Card>
-        <div className="text-center text-sm mb-5">
-          Don’t have an account? <Link href="/auth/signup" className="underline">Sign up</Link>
+        <div className="text-center text-sm mt-2 mb-5">
+          Have an account already? <Link href="/auth/login" className="underline">Login</Link>
         </div>
       </div>
     </div>

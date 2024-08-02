@@ -52,25 +52,32 @@ const loadEmailTemplate = (filePath, replacements) => {
     await sgMail.send(msg);
   };
 
-// Send Password Reset Email
-const sendResetPasswordEmail = async (user) => {
-  const resetToken = jwt.sign({
-    id: user._id,
-    email: user.email,
-  }, jwtSecret, { expiresIn: '1h' });
-
-  const resetUrl = `${process.env.BASE_URL}/auth/reset?token=${resetToken}`;
-
-  const msg = {
-    to: user.email,
-    from: 'erkadoovince@gmail.com',
-    subject: 'Reset Your Password',
-    text: `Please reset your password by clicking the following link: ${resetUrl}`,
-    html: `<strong>Please reset your password by clicking the following link: <a href="${resetUrl}">Reset Password</a></strong>`,
+  const sendResetPasswordEmail = async (user) => {
+    const resetToken = jwt.sign({
+      id: user._id,
+      email: user.email,
+    }, jwtSecret, { expiresIn: '1h' });
+  
+    const resetUrl = `${process.env.BASE_URL}/auth/reset?token=${resetToken}`;
+  
+    const replacements = {
+      action_url: resetUrl,
+    };
+  
+    const templatePath = path.join(__dirname, '../email/reset.html');
+    const emailHtml = loadEmailTemplate(templatePath, replacements);
+  
+    const msg = {
+      to: user.email,
+      from: 'erkadoovince@gmail.com',
+      subject: 'Reset Your Password',
+      text: `Please reset your password by clicking the following link: ${resetUrl}`,
+      html: emailHtml,
+    };
+  
+    await sgMail.send(msg);
   };
-
-  await sgMail.send(msg);
-};
+  
 
 // Register
 const register = async (userData) => {
