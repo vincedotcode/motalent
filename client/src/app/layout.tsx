@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/helper/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/react"
+import { PWA } from "@/pwa";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -17,6 +18,9 @@ const fontSans = FontSans({
 export const metadata: Metadata = {
   title: "motalent",
   description: "Share your talent, find a talent.",
+  generator: "Next.js",
+  manifest: "/manifest.json",
+  keywords: ["nextjs", "pwa", "monature", "sustainability", "environment"],
 };
 
 
@@ -40,6 +44,7 @@ export default function RootLayout({
       >
           <Analytics />
           {children}
+          <PWA />
         </ThemeProvider>
         <Toaster />
       </body>

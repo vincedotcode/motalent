@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
-import { useUserStore } from '@/hooks/userStore';
+import { setUserData } from '@/hooks/useAuth';
+
 
 interface UserData {
     _id: string;
@@ -42,7 +43,6 @@ interface RegisterCredentials {
     role: string;
 }
 
-
 interface ApiResponse {
     message: string[];
     error: string;
@@ -51,14 +51,13 @@ interface ApiResponse {
 interface VerifyEmailResponse {
     message: string;
 }
+
 export const login = async (credentials: LoginCredentials): Promise<LoginResponse> => {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
 
     try {
         const response = await axios.post<LoginResponse>(url, credentials);
-        const { user, token } = response.data;
-        const setUser = useUserStore.getState().setUser;
-        setUser(user, token);
+        setUserData(response.data);
         return response.data;
     } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
@@ -83,6 +82,7 @@ export const register = async (credentials: RegisterCredentials): Promise<LoginR
 
     try {
         const response = await axios.post<LoginResponse>(url, credentials);
+        const { user, token } = response.data;
         return response.data;
     } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
@@ -101,7 +101,6 @@ export const register = async (credentials: RegisterCredentials): Promise<LoginR
         }
     }
 };
-
 
 export const verifyEmail = async (token: string): Promise<VerifyEmailResponse> => {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/verify-email?token=${token}`;

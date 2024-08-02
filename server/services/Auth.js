@@ -19,7 +19,7 @@ const sendVerificationEmail = async (user) => {
         email: user.email,
     }, jwtSecret, { expiresIn: '1h' });
 
-    const verificationUrl = `http://localhost:3000/verify?token=${verificationToken}`;
+    const verificationUrl = `http://localhost:3000/auth/verify?token=${verificationToken}`;
 
     const msg = {
         to: user.email,
@@ -41,7 +41,7 @@ const sendResetPasswordEmail = async (user) => {
         email: user.email,
     }, jwtSecret, { expiresIn: '1h' });
 
-    const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+    const resetUrl = `http://localhost:3000/auth/reset?token=${resetToken}`;
 
     const msg = {
         to: user.email,
