@@ -128,9 +128,9 @@ export default function Login() {
                   name="email"
                   render={({ field, fieldState }) => (
                     <FormItem>
-                      <FormLabel>username</FormLabel>
+                      <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input {...field} type="username" placeholder="example@example.com" />
+                        <Input {...field} type="email" placeholder="example@example.com" />
                       </FormControl>
                       {fieldState.error && (
                         <FormMessage>{fieldState.error.message}</FormMessage>
