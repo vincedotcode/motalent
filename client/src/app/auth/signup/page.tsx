@@ -273,6 +273,7 @@ export default function SignUp() {
                             field.onChange(date.from);
                           }}
                           variant="outline"
+                          yearsRange={300}
                           numberOfMonths={1}
                           className="min-w-[250px]"
                         />

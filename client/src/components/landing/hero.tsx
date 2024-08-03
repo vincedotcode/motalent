@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { BriefcaseBusiness, Menu, User, ChevronRight } from 'lucide-react';
-import Link from "next/link"
-
-
+import { BriefcaseBusiness, ChevronRight } from 'lucide-react';
+import Link from "next/link";
+import { FeatureSuggestionDialog } from '@/components/landing/FeatureSuggestionDialog'; // Import the dialog component
+import { Button } from '@/components/ui/button';
 export default function HeroSectionGradientBackground() {
     return (
         <>
@@ -20,17 +19,13 @@ export default function HeroSectionGradientBackground() {
                 <div className="relative z-10">
                     <div className="container py-10 lg:py-16">
                         <div className="max-w-2xl text-center mx-auto">
-                            <p className="">Prensenting</p>
+                            <p className="">Presenting</p>
                             {/* Title */}
-
                             <div className="mt-5 max-w-2xl flex items-center justify-center">
-
-
                                 <BriefcaseBusiness className="mr-2" color="#3576DF" size={48} />
                                 <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                                     MoTalent
                                 </h1>
-
                             </div>
                             {/* End Title */}
                             <div className="mt-5 max-w-3xl">
@@ -45,12 +40,7 @@ export default function HeroSectionGradientBackground() {
                                         Get Started
                                     </Button>
                                 </Link>
-                                <Link href="/contact">
-                                <Button size={"lg"} variant={"outline"}>
-                                    Request Features
-                                </Button>
-                                </Link>
-
+                                <FeatureSuggestionDialog /> 
                             </div>
                             <div className="mt-5 flex justify-center items-center gap-x-1 sm:gap-x-3">
                                 <span className="text-sm text-muted-foreground">

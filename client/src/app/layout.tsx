@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/helper/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/react"
 import { PWA } from "@/components/pwa/pwa";
+import FirebaseForeground from '@/components/FirebaseForeground';
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -38,11 +39,12 @@ export default function RootLayout({
         fontSans.variable
       )}><ThemeProvider
         attribute="class"
-        defaultTheme="system"
+        defaultTheme="dark"
         enableSystem
         disableTransitionOnChange
       >
           <Analytics />
+          <FirebaseForeground />
           {children}
   
         </ThemeProvider>
