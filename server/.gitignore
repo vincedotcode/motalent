@@ -130,4 +130,4 @@ dist
 .pnp.*
 
 # .gitignore
-/config/servicekey.json
+config/servicekey.json
