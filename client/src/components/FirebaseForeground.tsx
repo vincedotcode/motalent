@@ -1,3 +1,4 @@
+// components/FirebaseForeground.tsx
 "use client";
 
 import { useEffect } from 'react';
@@ -11,7 +12,8 @@ const FirebaseForeground = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
       if (notificationPermissionStatus === 'granted') {
-        const unsubscribe = onMessage(messaging, (payload) => {
+        const messagingInstance = getMessaging();
+        const unsubscribe = onMessage(messagingInstance, (payload) => {
           console.log('Foreground push notification received:', payload);
         });
 

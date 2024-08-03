@@ -5,9 +5,12 @@ dotenv.config();
 let serviceAccount;
 
 if (process.env.NODE_ENV === 'production') {
-  serviceAccount = require('/etc/secrets/servicekey.json');
+  const { readFileSync } = await import('fs');
+  const { join } = await import('path');
+  serviceAccount = JSON.parse(readFileSync('/etc/secrets/servicekey.json', 'utf8'));
 } else {
-  serviceAccount = require(process.env.FIREBASE_SERVICE_KEY_PATH);
+  const { readFileSync } = await import('fs');
+  serviceAccount = JSON.parse(readFileSync(process.env.FIREBASE_SERVICE_KEY_PATH, 'utf8'));
 }
 
 admin.initializeApp({
