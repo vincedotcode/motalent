@@ -22,15 +22,19 @@ messaging.onBackgroundMessage((payload) => {
   const notificationOptions = {
     body,
     icon,
+    data: payload.data // Include the data payload
   };
 
   return self.registration.showNotification(title, notificationOptions);
 });
 
 self.addEventListener('notificationclick', (event) => {
-  if (event.notification.data && event.notification.data.link) {
-    clients.openWindow(event.notification.data.link);
-  }
+  console.log('[firebase-messaging-sw.js] Notification click received.', event.notification.data);
+
+  const urlToOpen = event.notification.data.link || 'https://motalentmu.vercel.app/'; // Fallback to the main URL
+
+  const promiseChain = clients.openWindow(urlToOpen);
+  event.waitUntil(promiseChain);
 
   event.notification.close();
 });

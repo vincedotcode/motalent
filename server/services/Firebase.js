@@ -13,6 +13,9 @@ const sendNotification = async (token, title, body) => {
       body,
     },
     token,
+    data: {
+        link:  'https://motalentmu.vercel.app/', // Default link if not provided
+      },
     webpush: {
       headers: {
         Authorization: `Bearer ${process.env.FIREBASE_VAPID_PRIVATE_KEY}`,
