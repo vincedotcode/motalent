@@ -34,9 +34,11 @@ const useFCMToken = () => {
           console.log(`Notification Permission: ${permission}`);
 
           if (permission === 'granted') {
+            console.log('Waiting for Service Worker registration to be ready');
             const registration = await navigator.serviceWorker.ready;
             console.log('Service Worker is ready');
 
+            console.log('Attempting to get FCM token');
             const currentToken = await getToken(messaging, {
               vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
               serviceWorkerRegistration: registration,
@@ -44,11 +46,14 @@ const useFCMToken = () => {
             console.log(`Current Token: ${currentToken}`);
             if (currentToken) {
               setToken(currentToken);
+              console.log('Sending token to server');
               await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notifications/tokens`, { token: currentToken });
               console.log('Token sent to server');
             } else {
               console.log('No registration token available. Request permission to generate one.');
             }
+          } else {
+            console.log('Notification permission not granted');
           }
         } catch (err) {
           console.error('An error occurred while retrieving token.', err);
