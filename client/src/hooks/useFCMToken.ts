@@ -17,6 +17,7 @@ const useFCMToken = () => {
   const [token, setToken] = useState<string | null>(null);
   const [notificationPermissionStatus, setNotificationPermissionStatus] = useState<NotificationPermission | null>(null);
   const [isSupported, setIsSupported] = useState<boolean>(true);
+  const [isTokenSent, setIsTokenSent] = useState<boolean>(false);
 
   useEffect(() => {
     console.log('Initializing Firebase Messaging');
@@ -46,9 +47,12 @@ const useFCMToken = () => {
             console.log(`Current Token: ${currentToken}`);
             if (currentToken) {
               setToken(currentToken);
-              console.log('Sending token to server');
-              await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notifications/tokens`, { token: currentToken });
-              console.log('Token sent to server');
+              if (!isTokenSent) {
+                console.log('Sending token to server');
+                await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notifications/tokens`, { token: currentToken });
+                setIsTokenSent(true);
+                console.log('Token sent to server');
+              }
             } else {
               console.log('No registration token available. Request permission to generate one.');
             }
@@ -65,7 +69,7 @@ const useFCMToken = () => {
       setIsSupported(false);
       console.log('Notifications are not supported');
     }
-  }, []);
+  }, [isTokenSent]);
 
   return { token, notificationPermissionStatus, isSupported };
 };
