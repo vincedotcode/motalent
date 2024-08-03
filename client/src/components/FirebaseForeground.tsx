@@ -1,9 +1,7 @@
-// components/FirebaseForeground.tsx
 "use client";
 
 import { useEffect } from 'react';
 import { getMessaging, onMessage } from 'firebase/messaging';
-import { messaging } from '@/lib/firebase';
 import useFCMToken from '@/hooks/useFCMToken';
 
 const FirebaseForeground = () => {

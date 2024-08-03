@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { initializeApp } from 'firebase/app';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { getMessaging, getToken } from 'firebase/messaging';
 import axios from 'axios';
 
 const firebaseConfig = {
@@ -19,28 +19,36 @@ const useFCMToken = () => {
   const [isSupported, setIsSupported] = useState<boolean>(true);
 
   useEffect(() => {
+    console.log('Initializing Firebase Messaging');
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window) {
       const initializeFirebase = async () => {
-        // Initialize Firebase app
-        initializeApp(firebaseConfig);
-        const messaging = getMessaging();
-        
         try {
+          // Initialize Firebase app
+          const app = initializeApp(firebaseConfig);
+          const messaging = getMessaging(app);
+          console.log('Firebase App Initialized');
+
           console.log('Requesting Notification Permission');
           const permission = await Notification.requestPermission();
           setNotificationPermissionStatus(permission);
           console.log(`Notification Permission: ${permission}`);
 
-          const registration = await navigator.serviceWorker.ready;
-          console.log('Service Worker is ready');
+          if (permission === 'granted') {
+            const registration = await navigator.serviceWorker.ready;
+            console.log('Service Worker is ready');
 
-          const currentToken = await getToken(messaging, { vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY, serviceWorkerRegistration: registration });
-          console.log(`Current Token: ${currentToken}`);
-          if (currentToken) {
-            setToken(currentToken);
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notifications/tokens`, { token: currentToken });
-          } else {
-            console.log('No registration token available. Request permission to generate one.');
+            const currentToken = await getToken(messaging, {
+              vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
+              serviceWorkerRegistration: registration,
+            });
+            console.log(`Current Token: ${currentToken}`);
+            if (currentToken) {
+              setToken(currentToken);
+              await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notifications/tokens`, { token: currentToken });
+              console.log('Token sent to server');
+            } else {
+              console.log('No registration token available. Request permission to generate one.');
+            }
           }
         } catch (err) {
           console.error('An error occurred while retrieving token.', err);
