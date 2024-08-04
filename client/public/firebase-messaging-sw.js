@@ -18,10 +18,10 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
 
-  const { title, body, icon } = payload.notification;
+  const { title, body } = payload.notification;
   const notificationOptions = {
     body,
-    icon,
+    icon: 'https://motalentmu.vercel.app/logomain.png', // Hardcoded icon URL
     data: payload.data // Include the data payload
   };
 
