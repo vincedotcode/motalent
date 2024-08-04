@@ -1,4 +1,6 @@
-import { useCallback } from 'react';
+// hooks/useAuth.ts
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 
 interface UserData {
@@ -51,4 +53,17 @@ export const clearUserData = () => {
     localStorage.removeItem('userData');
     Cookies.remove('token');
   }
+};
+
+export const useAdminCheck = () => {
+  const router = useRouter();
+  const user = getUserData();
+
+  useEffect(() => {
+    if (!user || user.role !== 'admin') {
+      router.push('/');
+    }
+  }, [user, router]);
+
+  return user;
 };

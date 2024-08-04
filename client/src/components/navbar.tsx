@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { BriefcaseBusiness, Menu, User } from 'lucide-react';
 import { ModeToggle } from "@/helper/darkmode";
-import UserDropdown from '@/components/UserDropdown';
+import UserDropdown from '@/components/user-dropdown';
 import { getUserData } from '@/hooks/useAuth';
 
 export default function Navbar() {

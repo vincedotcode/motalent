@@ -1,5 +1,5 @@
-import PrivacyPolicy from "@/components/privacy/PrivacyCard";
-import HeroSection from "@/components/privacy/HeroSection";
+import PrivacyPolicy from "@/components/privacy/privacy-card";
+import HeroSection from "@/components/privacy/hero-section";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 

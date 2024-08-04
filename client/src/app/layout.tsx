@@ -9,7 +9,7 @@ import { ThemeProvider } from "@/helper/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/react"
 import { PWA } from "@/components/pwa/pwa";
-import FirebaseForeground from '@/components/FirebaseForeground';
+import FirebaseForeground from '@/components/firebase-foreground';
 
 const fontSans = FontSans({
   subsets: ["latin"],
