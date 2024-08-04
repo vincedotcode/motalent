@@ -12,7 +12,7 @@ export default function Footer() {
                 </div>
                 <p className="text-xs text-muted-foreground">&copy; 2024 Vincdotcode Inc. All rights reserved.</p>
                 <nav className="flex gap-4 text-xs">
-                    <Link href="#" className="hover:underline underline-offset-4" prefetch={false}>
+                    <Link href="/privacy" className="hover:underline underline-offset-4" prefetch={false}>
                         Privacy Policy
                     </Link>
                 </nav>
