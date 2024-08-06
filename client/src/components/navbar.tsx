@@ -38,6 +38,11 @@ export default function Navbar() {
                                     Contact Us
                                 </Link>
                             </li>
+                            <li>
+                                <Link href="/jobs" passHref className="block py-2 px-4 hover:bg-primary-foreground rounded-sm">
+                                    Jobs
+                                </Link>
+                            </li>
                             {isLoggedIn ? (
                                 <li className="flex md:hidden justify-center my-2">
                                     <UserDropdown />

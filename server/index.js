@@ -5,8 +5,10 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import cors from 'cors';
 import authRoutes from './routes/Auth.js';
 import contactRoutes from './routes/Contact.js';
-import featureRoutes from './routes/Feature.js'; 
+import featureRoutes from './routes/Feature.js';
 import notificationRoutes from './routes/Firebase.js';
+import companyRoutes from './routes/Company.js'; 
+import jobRoutes from './routes/Job.js';
 
 import config from './config/index.js';
 
@@ -50,8 +52,10 @@ app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
 app.use('/api', contactRoutes);
-app.use('/api/feature', featureRoutes); 
+app.use('/api/feature', featureRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/companies', companyRoutes);
+app.use('/api/jobs', jobRoutes);
 
 
 const PORT = process.env.PORT || 8080;
