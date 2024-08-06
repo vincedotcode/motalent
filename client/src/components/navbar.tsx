@@ -33,14 +33,15 @@ export default function Navbar() {
                     </div>
                     <div className={`absolute md:relative top-16 left-0 md:top-auto md:left-auto w-full md:w-auto transition-all duration-300 ease-in-out ${isOpen ? 'block' : 'hidden'} md:block dark:bg-background shadow-md md:shadow-none z-50`}>
                         <ul className="flex flex-col md:flex-row md:space-x-6 md:mt-0 md:text-sm md:font-medium z-50 bg-background dark:bg-background/50">
-                            <li>
-                                <Link href="/contact" passHref className="block py-2 px-4 hover:bg-primary-foreground rounded-sm">
-                                    Contact Us
-                                </Link>
-                            </li>
+                          
                             <li>
                                 <Link href="/jobs" passHref className="block py-2 px-4 hover:bg-primary-foreground rounded-sm">
                                     Jobs
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/contact" passHref className="block py-2 px-4 hover:bg-primary-foreground rounded-sm">
+                                    Contact Us
                                 </Link>
                             </li>
                             {isLoggedIn ? (
