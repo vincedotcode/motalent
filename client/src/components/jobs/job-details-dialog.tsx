@@ -13,19 +13,17 @@ import { Job } from '@/helper/types';
 
 interface JobDetailsDialogProps {
   job: Job | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-const JobDetailsDialog: React.FC<JobDetailsDialogProps> = ({ job }) => {
+const JobDetailsDialog: React.FC<JobDetailsDialogProps> = ({ job, open, onOpenChange }) => {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">View Job Details</Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-full h-screen overflow-y-auto">
-       
         <JobDetails job={job} />
         <DialogFooter>
-          <Button variant="ghost">Close</Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>Close</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
