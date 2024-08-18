@@ -9,6 +9,7 @@ import featureRoutes from './routes/Feature.js';
 import notificationRoutes from './routes/Firebase.js';
 import companyRoutes from './routes/Company.js'; 
 import jobRoutes from './routes/Job.js';
+import userRoutes from './routes/User.js';
 
 import config from './config/index.js';
 
@@ -56,6 +57,8 @@ app.use('/api/feature', featureRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/jobs', jobRoutes);
+app.use('/api/users', userRoutes);
+
 
 
 const PORT = process.env.PORT || 8080;

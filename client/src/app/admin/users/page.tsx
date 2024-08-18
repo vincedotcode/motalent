@@ -1,15 +1,14 @@
-import Link from "next/link";
-
-
-import { ContentLayout } from "@/components/admin-panel/content-layout";
+import Link from 'next/link';
+import { ContentLayout } from '@/components/admin-panel/content-layout';
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator
-} from "@/components/ui/breadcrumb";
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { UsersTable } from '@/components/admin-panel/users/user-table'; // Adjust the import path as necessary
 
 export default function UsersPage() {
   return (
@@ -18,13 +17,13 @@ export default function UsersPage() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/">Home</Link>
+              <Link href="/admin">Home</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/dashboard">Dashboard</Link>
+              <Link href="/admin">Dashboard</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -33,7 +32,7 @@ export default function UsersPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <h2> Users </h2>
+      <UsersTable />
     </ContentLayout>
   );
 }

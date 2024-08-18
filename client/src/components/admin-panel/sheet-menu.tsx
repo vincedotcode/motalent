@@ -25,7 +25,7 @@ export function SheetMenu() {
             variant="link"
             asChild
           >
-            <Link href="/dashboard" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <BriefcaseBusiness className="w-6 h-6 mr-1" color="#3576DF" />
               <h1 className="font-bold text-lg">Motalent</h1>
             </Link>
