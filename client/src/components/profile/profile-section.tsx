@@ -1,0 +1,49 @@
+import {ProfileCards}  from "@/components/profile/profile-cards";
+import { FileText, Briefcase, Calendar, Settings, Shield, Users } from "lucide-react"; // Import the specific icons
+
+export const projects = [
+  {
+    title: "Resume/CV",
+    description: "Create and manage your professional resume/CV to showcase your skills and experience.",
+    link: "/resume",
+    icon: FileText,
+  },
+  {
+    title: "Applications",
+    description: "Track your job applications and see your progress at a glance.",
+    link: "/applications",
+    icon: Briefcase,
+  },
+  {
+    title: "Events",
+    description: "View and register for upcoming events and workshops.",
+    link: "/events",
+    icon: Calendar,
+  },
+  {
+    title: "Profile Settings",
+    description: "Manage your personal information, account settings, and privacy preferences.",
+    link: "/profile-settings",
+    icon: Settings,
+  },
+  {
+    title: "Worker's Rights",
+    description: "Learn about your rights as a worker and how to protect yourself in the workplace.",
+    link: "/workers-rights",
+    icon: Shield,
+  },
+  {
+    title: "Matches",
+    description: "See job matches that align with your skills and career interests.",
+    link: "/matches",
+    icon: Users,
+  },
+];
+
+export default function ProfileSection() {
+    return (
+        <div className="max-w-5xl mx-auto px-8 py-10">
+            <ProfileCards items={projects} />
+        </div>
+    );
+}

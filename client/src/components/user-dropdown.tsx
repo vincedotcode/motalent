@@ -35,6 +35,9 @@ const UserDropdown = () => {
                         </DropdownMenuItem>
                     </>
                 )}
+                <DropdownMenuItem className="px-2 py-1 hover:bg-gray-100 hover:text-slate-800" onClick={() => handleNavigate('/profile')}>
+                    Profile
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="px-2 py-1 hover:bg-gray-100 hover:text-slate-800" onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
