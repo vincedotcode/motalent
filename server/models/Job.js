@@ -91,6 +91,10 @@ const jobSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    qualifications: {
+        type: [String],
+        required: true,
+    },
     workCondition: {
         type: String,
         required: true,

@@ -19,7 +19,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onSelect, isSelected }) => {
     <Card
       onClick={handleSelect}
       className={`w-full max-w-3xl flex flex-col gap-6 p-4 my-3 rounded-lg shadow-md cursor-pointer transition-colors ${
-        isSelected ? 'border-2 border-primary bg-slate-900' : ''
+        isSelected ? 'border-2 border-primary dark:bg-slate-900 bg-slate-300' : ''
       } hover:bg-gray-100 dark:hover:bg-slate-800`}
     >
       <div className="flex flex-col md:flex-row md:justify-between">

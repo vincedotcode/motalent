@@ -71,6 +71,10 @@ const router = express.Router();
  *                 type: string
  *               candidateSelectionCriteria:
  *                 type: string
+ *               qualifications:
+ *                 type: array
+ *                 items:
+ *                   type: string
  *               workCondition:
  *                 type: string
  *               workArrangement:
@@ -128,7 +132,7 @@ router.post('/', authenticateToken, jobController.createJob);
  *       400:
  *         description: Error message
  */
-router.get('/', authenticateToken, jobController.getAllJobs);
+router.get('/',  jobController.getAllJobs);
 
 /**
  * @swagger
@@ -150,7 +154,7 @@ router.get('/', authenticateToken, jobController.getAllJobs);
  *       400:
  *         description: Error message
  */
-router.get('/:id', authenticateToken, jobController.getJobById);
+router.get('/:id',  jobController.getJobById);
 
 /**
  * @swagger

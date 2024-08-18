@@ -64,11 +64,16 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job }) => {
       </div>
       <div className="space-y-2 mt-6">
         <h2 className="text-xl font-bold">Skills</h2>
-        <p>{job.hardSkills.join(', ')}</p>
+        <p><strong>Hard Skills:</strong> {job.hardSkills.join(', ')}</p>
+        <p><strong>Soft Skills:</strong> {job.softSkills.join(', ')}</p>
       </div>
       <div className="space-y-2 mt-6">
-        <h2 className="text-xl font-bold">Soft Skills</h2>
-        <p>{job.softSkills.join(', ')}</p>
+        <h2 className="text-xl font-bold">Qualifications</h2>
+        <ul className="list-disc pl-6 space-y-1">
+          {job.qualifications.map((qualification, index) => (
+            <li key={index}>{qualification}</li>
+          ))}
+        </ul>
       </div>
       <div className="space-y-2 mt-6">
         <h2 className="text-xl font-bold">Goals and Performance Metrics</h2>

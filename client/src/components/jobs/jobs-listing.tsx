@@ -7,17 +7,50 @@ import JobDetails from '@/components/jobs/job-details';
 import JobDetailsDialog from '@/components/jobs/job-details-dialog';
 import { Job } from '@/helper/types';
 import Loader from '@/components/loader';
+import FilterComponent from '@/components/jobs/jobs-filter';
+
+interface Filter {
+    jobType: string | null;
+    workArrangement: string | null;
+    experienceLevel: string | null;
+    industry: string | null;
+    sortByDate: string | null;
+}
 
 const JobListing: React.FC = () => {
     const [jobs, setJobs] = useState<Job[]>([]);
+    const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+    const [filter, setFilter] = useState<Filter>({
+        jobType: null,
+        workArrangement: null,
+        experienceLevel: null,
+        industry: null,
+        sortByDate: null,
+    });
 
     const handleSelectJob = (job: Job) => {
-      setSelectedJob(job);
+        setSelectedJob(job);
     };
 
+    const handleFilterChange = (newFilter: Partial<Filter>) => {
+        const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+    
+        const capitalizedFilter = Object.fromEntries(
+            Object.entries(newFilter).map(([key, value]) => [
+                key,
+                value ? capitalize(value) : value,
+            ])
+        ) as Partial<Filter>;
+    
+        setFilter(prevFilter => ({
+            ...prevFilter,
+            ...capitalizedFilter,
+        }));
+    };
+    
     useEffect(() => {
         const fetchJobs = async () => {
             try {
@@ -36,6 +69,30 @@ const JobListing: React.FC = () => {
         fetchJobs();
     }, []);
 
+    useEffect(() => {
+        console.log(filter);
+        const filtered = jobs.filter((job) => {
+            return (
+                (!filter.jobType || job.type === filter.jobType) &&
+                (!filter.workArrangement || job.workArrangement === filter.workArrangement) &&
+                (!filter.experienceLevel || job.experienceLevel === filter.experienceLevel) &&
+                (!filter.industry || job.industry === filter.industry)
+            );
+        });
+
+        if (filter.sortByDate) {
+            filtered.sort((a, b) => {
+                if (filter.sortByDate === 'latest') {
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                } else {
+                    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+                }
+            });
+        }
+
+        setFilteredJobs(filtered);
+    }, [filter, jobs]);
+
     if (loading) {
         return <Loader />;
     }
@@ -46,9 +103,10 @@ const JobListing: React.FC = () => {
 
     return (
         <div className="flex flex-col items-center justify-center p-6">
+            <FilterComponent filter={filter} onFilterChange={handleFilterChange} />
             <div className="flex flex-col md:flex-row items-start justify-center w-full max-w-5xl space-y-6 md:space-y-0 md:space-x-6">
                 <div className="flex flex-col space-y-6 md:w-1/2 h-screen overflow-y-auto p-4">
-                    {jobs.map((job) => (
+                    {filteredJobs.map((job) => (
                         <JobCard 
                             key={job._id} 
                             job={job} 
@@ -69,4 +127,3 @@ const JobListing: React.FC = () => {
 };
 
 export default JobListing;
-``

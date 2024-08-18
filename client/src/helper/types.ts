@@ -44,6 +44,7 @@ export interface Job {
     keyResponsibilities: string;
     hardSkills: string[];
     softSkills: string[];
+    qualifications: string[];
     goalsAndPerformanceMetrics: string;
     managementStyle: string;
     careerProgression: string;
