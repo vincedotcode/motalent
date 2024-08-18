@@ -43,7 +43,7 @@ export default function DashboardPage() {
   }, []);
 
   if (loading) return <> <Loader/> </>;
-  if (error) return <p>Error: {error}</p>;
+  if (error) return <p>Error tet: {error}</p>;
 
   return (
     <ContentLayout title="Dashboard">
