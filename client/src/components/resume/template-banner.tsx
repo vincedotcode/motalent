@@ -1,15 +1,19 @@
-"use client";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
-export default function ProfileBanner() {
-
-
-
-    return (
-        <div className="relative h-500 w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-[#000000] bg-[radial-gradient(#4f4f4f2e_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff33_1px,#00091d_1px)] bg-[size:20px_20px]">
-            <div className="container relative mx-auto px-4 md:px-6 space-y-8 text-center">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-primary">
-                </h1>
-            </div>
-        </div>
-    )
+export default function TemplateBanner() {
+  return (
+    <section className="w-full h-[50vh] bg-cover bg-center bg-[url('/assets/cv.jpg')] flex items-center justify-center relative">
+      <div className="container px-4 md:px-6 text-center space-y-6">
+        <h1 className="text-5xl md:text-7xl font-bold text-white drop-shadow-lg">
+          Manage Your CV Here!
+        </h1>
+        <p className="text-xl md:text-2xl text-white font-medium drop-shadow-lg">
+          Choose a template and get started
+        </p>
+       
+      </div>
+      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[rgba(0,0,0,0.5)] to-[rgba(0,0,0,0)]" />
+    </section>
+  );
 }

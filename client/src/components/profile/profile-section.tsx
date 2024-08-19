@@ -1,11 +1,11 @@
 import {ProfileCards}  from "@/components/profile/profile-cards";
-import { FileText, Briefcase, Calendar, Settings, Shield, Users } from "lucide-react"; // Import the specific icons
+import { FileText, Briefcase, Calendar, Settings, Shield, Users } from "lucide-react"; 
 
 export const projects = [
   {
     title: "Resume/CV",
     description: "Create and manage your professional resume/CV to showcase your skills and experience.",
-    link: "/resume",
+    link: "/profile/resume",
     icon: FileText,
   },
   {

@@ -15,7 +15,7 @@ const getAllResumesByUserId = async (req, res) => {
     try {
         const userId = req.params.userId;  
         const resumes = await resumeService.getResumesByUserId(userId);
-        res.json(resumes);
+        res.status(200).json({data: resumes});
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

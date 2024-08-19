@@ -65,6 +65,7 @@ export interface Resume {
 export const getResumesByUserId = async (userId: string): Promise<Resume[]> => {
     try {
         const response = await api.get<Resume[]>(`/resumes/${userId}/resumes`);
+        console.log(response.data);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {

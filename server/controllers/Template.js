@@ -13,7 +13,9 @@ const createTemplate = async (req, res) => {
 const getAllTemplates = async (req, res) => {
     try {
         const templates = await templateService.getAllTemplates();
-        res.status(200).json(templates);
+        res.status(200).json({data: templates});
+
+
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
