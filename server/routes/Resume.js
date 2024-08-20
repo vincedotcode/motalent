@@ -54,6 +54,8 @@ const router = express.Router();
  *                     type: string
  *                   country:
  *                     type: string
+ *                   description:
+ *                     type: string
  *               education:
  *                 type: array
  *                 items:

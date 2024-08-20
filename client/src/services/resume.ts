@@ -15,6 +15,7 @@ export interface PersonalInfo {
     addressLine1: string;
     addressLine2?: string;
     country: string;
+    description?: string;
 }
 
 export interface Education {
@@ -79,7 +80,7 @@ export const getResumesByUserId = async (userId: string): Promise<Resume[]> => {
 
 export const getResumeById = async (resumeId: string): Promise<Resume> => {
     try {
-        const response = await api.get<Resume>(`/resume/${resumeId}`);
+        const response = await api.get<Resume>(`/resumes/${resumeId}`);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
@@ -107,7 +108,7 @@ export const createResume = async (userId: string, resumeData: Partial<Resume>):
 
 export const updateResume = async (resumeId: string, resumeData: Partial<Resume>): Promise<Resume> => {
     try {
-        const response = await api.put<Resume>(`/resume/${resumeId}`, resumeData);
+        const response = await api.put<Resume>(`/resumes/${resumeId}`, resumeData);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
@@ -121,7 +122,7 @@ export const updateResume = async (resumeId: string, resumeData: Partial<Resume>
 
 export const deleteResume = async (resumeId: string): Promise<void> => {
     try {
-        await api.delete(`/resume/${resumeId}`);
+        await api.delete(`/resumes/${resumeId}`);
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
             const parsedError = error.response.data as ApiResponse;
@@ -134,7 +135,7 @@ export const deleteResume = async (resumeId: string): Promise<void> => {
 
 export const addSectionToResume = async (resumeId: string, sectionName: string, sectionData: object): Promise<Resume> => {
     try {
-        const response = await api.put<Resume>(`/resume/${resumeId}/section`, {
+        const response = await api.put<Resume>(`/resumes/${resumeId}/section`, {
             sectionName,
             sectionData,
         });
@@ -151,7 +152,7 @@ export const addSectionToResume = async (resumeId: string, sectionName: string, 
 
 export const deleteSectionFromResume = async (resumeId: string, sectionName: string, sectionId: string): Promise<Resume> => {
     try {
-        const response = await api.delete<Resume>(`/resume/${resumeId}/section`, {
+        const response = await api.delete<Resume>(`/resumes/${resumeId}/section`, {
             data: {
                 sectionName,
                 sectionId,

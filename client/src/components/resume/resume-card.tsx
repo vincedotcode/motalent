@@ -1,10 +1,13 @@
 import React from "react";
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { BriefcaseIcon, GraduationCapIcon, PuzzleIcon, FlagIcon, HourglassIcon, Globe } from "lucide-react"; 
+import { BriefcaseIcon, GraduationCapIcon, PuzzleIcon, FlagIcon, HourglassIcon, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button"; // Assuming you have a button component in your UI library
 
 interface ResumeCardProps {
     resume: {
+        _id: string; // Ensure the resume ID is available for navigation
         personalInfo: {
             firstName: string;
             lastName: string;
@@ -39,6 +42,7 @@ interface ResumeCardProps {
 
 const ResumeCard: React.FC<ResumeCardProps> = ({ resume }) => {
     const {
+        _id,
         personalInfo,
         education,
         experience,
@@ -47,6 +51,9 @@ const ResumeCard: React.FC<ResumeCardProps> = ({ resume }) => {
         hobbies,
         completionPercentage,
     } = resume;
+
+    // Get the latest job title (assuming experience is sorted by date descending)
+    const latestJobTitle = experience.length > 0 ? experience[0].jobTitle : "N/A";
 
     return (
         <Card className="w-full max-w-xl p-8 grid gap-8">
@@ -58,7 +65,7 @@ const ResumeCard: React.FC<ResumeCardProps> = ({ resume }) => {
                         </Avatar>
                         <div className="grid gap-1">
                             <h2 className="text-2xl font-bold">{personalInfo.firstName} {personalInfo.lastName}</h2>
-                            <p className="text-muted-foreground">Software Engineer</p>
+                            <p className="text-muted-foreground">{latestJobTitle}</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -149,6 +156,13 @@ const ResumeCard: React.FC<ResumeCardProps> = ({ resume }) => {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div className="flex justify-end">
+                <Link href={`/profile/resume/${_id}`}>
+                    <Button className="bg-primary text-white hover:bg-primary-dark">
+                        View
+                    </Button>
+                </Link>
             </div>
         </Card>
     );

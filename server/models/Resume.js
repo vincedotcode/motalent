@@ -83,6 +83,10 @@ const resumeSchema = new mongoose.Schema({
             required: true,
             trim: true,
         },
+        description : {
+            type: String,
+            trim: true,
+        },
     },
     education: [
         {

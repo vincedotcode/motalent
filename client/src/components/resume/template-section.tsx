@@ -11,7 +11,7 @@ const TemplateSection: React.FC = () => {
     const [templates, setTemplates] = useState<Template[]>([]);
     const [resumeCounts, setResumeCounts] = useState<Record<string, number>>({});
     const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
-    const [filteredResumes, setFilteredResumes] = useState<Resume[] | null>(null); // Update to allow null
+    const [filteredResumes, setFilteredResumes] = useState<Resume[] | null>(null); 
     const [allResumes, setAllResumes] = useState<Resume[]>([]);
     const resumeSectionRef = useRef<HTMLDivElement>(null);
 
@@ -25,7 +25,6 @@ const TemplateSection: React.FC = () => {
                 const user = getUserData();
 
                 if (user) {
-                    // Retrieve all resumes for the user once
                     const allUserResumes = await getResumesByUserId(user._id);
                     setAllResumes(allUserResumes);
 
@@ -74,7 +73,7 @@ const TemplateSection: React.FC = () => {
             <div ref={resumeSectionRef}>
                 {selectedTemplateId && (
                     <ResumeSection
-                        resumes={filteredResumes || []} // Pass an empty array if there are no resumes
+                        resumes={filteredResumes || []} 
                         onCreateCV={() => {
                             console.log("Create CV button clicked");
                         }}
