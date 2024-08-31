@@ -38,58 +38,65 @@ type PaginationLinkProps = {
   isActive?: boolean
 } & Pick<ButtonProps, "size"> &
   React.ComponentProps<"a">
-
-const PaginationLink = ({
-  className,
-  isActive,
-  size = "icon",
-  ...props
-}: PaginationLinkProps) => (
-  <a
-    aria-current={isActive ? "page" : undefined}
-    className={cn(
-      buttonVariants({
-        variant: isActive ? "outline" : "ghost",
-        size,
-      }),
-      className
-    )}
-    {...props}
-  />
-)
-PaginationLink.displayName = "PaginationLink"
+  const PaginationLink = ({
+    className,
+    isActive,
+    size = "icon",
+    disabled,
+    ...props
+  }: PaginationLinkProps & { disabled?: boolean }) => (
+    <a
+      aria-current={isActive ? "page" : undefined}
+      className={cn(
+        buttonVariants({
+          variant: isActive ? "outline" : "ghost",
+          size,
+        }),
+        disabled ? "cursor-not-allowed opacity-50" : "",
+        className
+      )}
+      onClick={disabled ? undefined : props.onClick}
+      aria-disabled={disabled}
+      {...props}
+    />
+  );
+  
 
 const PaginationPrevious = ({
   className,
+  disabled,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
+}: React.ComponentProps<typeof PaginationLink> & { disabled?: boolean }) => (
   <PaginationLink
     aria-label="Go to previous page"
     size="default"
     className={cn("gap-1 pl-2.5", className)}
+    disabled={disabled}
     {...props}
   >
     <ChevronLeft className="h-4 w-4" />
     <span>Previous</span>
   </PaginationLink>
-)
-PaginationPrevious.displayName = "PaginationPrevious"
+);
+PaginationPrevious.displayName = "PaginationPrevious";
 
 const PaginationNext = ({
   className,
+  disabled,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
+}: React.ComponentProps<typeof PaginationLink> & { disabled?: boolean }) => (
   <PaginationLink
     aria-label="Go to next page"
     size="default"
     className={cn("gap-1 pr-2.5", className)}
+    disabled={disabled}
     {...props}
   >
     <span>Next</span>
     <ChevronRight className="h-4 w-4" />
   </PaginationLink>
-)
-PaginationNext.displayName = "PaginationNext"
+);
+PaginationNext.displayName = "PaginationNext";
 
 const PaginationEllipsis = ({
   className,

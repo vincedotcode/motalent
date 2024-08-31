@@ -11,7 +11,7 @@ export const projects = [
   {
     title: "Applications",
     description: "Track your job applications and see your progress at a glance.",
-    link: "/applications",
+    link: "/profile/applications",
     icon: Briefcase,
   },
   {
