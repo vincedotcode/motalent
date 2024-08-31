@@ -1,6 +1,6 @@
 import api from '@/helper/api';
 import { AxiosError } from 'axios';
-
+import {Job} from '@/helper/types';
 interface ApiResponse {
     message: string[];
     error: string;
@@ -34,39 +34,7 @@ interface Company {
     id: string;
 }
 
-interface Job {
-    _id: string;
-    title: string;
-    company: Company;
-    category: string;
-    location: string;
-    type: 'Full-time' | 'Part-time' | 'Contract' | 'Temporary' | 'Internship';
-    closingDate: string;
-    offeredSalary: string;
-    experienceLevel: 'Junior' | 'Middle' | 'Senior';
-    experience: string;
-    remoteWorkOption: boolean;
-    expatriateEligibility: boolean;
-    keyResponsibilities: string;
-    hardSkills: string[];
-    softSkills: string[];
-    qualifications: string[];
-    goalsAndPerformanceMetrics: string;
-    managementStyle: string;
-    careerProgression: string;
-    benefitsAndCulture: string;
-    candidateSelectionCriteria: string;
-    workCondition: string;
-    workArrangement: 'On-site' | 'Remote' | 'Hybrid';
-    industry: string;
-    views: number;
-    applicationCount: number;
-    status: 'Active' | 'Ending Soon' | 'Closed';
-    applicants: string[];
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-}
+
 
 export const getAllJobs = async (): Promise<Job[]> => {
     try {
