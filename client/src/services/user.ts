@@ -16,7 +16,6 @@ export interface User {
     addressLine1: string;
     addressLine2?: string;
     country: string;
-    password: string;
     isVerified: boolean;
     role: 'admin' | 'recruiter' | 'tenant' | 'user';
     openForWork: boolean;

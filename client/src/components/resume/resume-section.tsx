@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 interface ResumeSectionProps {
   resumes: any[];
   onCreateCV: () => void;
-  templateId: string; // Assuming you have a template ID to pass
+  templateId: string; 
 }
 
 const ResumeSection: React.FC<ResumeSectionProps> = ({ resumes, onCreateCV, templateId }) => {

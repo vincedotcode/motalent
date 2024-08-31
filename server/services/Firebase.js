@@ -2,6 +2,7 @@ import { messaging } from '../config/firebase.js';
 import Token from '../models/Token.js';
 import { Mutex } from 'async-mutex';
 import dotenv from 'dotenv';
+import JobApplication from '../models/Application.js';
 
 dotenv.config();
 const mutex = new Mutex();
@@ -30,7 +31,7 @@ const sendNotification = async (token, title, body) => {
   } catch (error) {
     console.error('Error sending message:', error);
     throw new Error('Error sending notification');
-  }
+  }a
 };
 
 const saveToken = async (token) => {
@@ -69,8 +70,23 @@ const sendNotificationToAll = async (title, body) => {
   }
 };
 
+const sendInAppNotification = async (applicationId, message) => {
+  const application = await JobApplication.findById(applicationId);
+  if (!application) {
+      throw new Error('Application not found');
+  }
+  const notificationDetails = {
+      message,
+      recipient: application.applicant,
+  };
+  await application.sendNotification(notificationDetails);
+  return application;
+};
+
+
 export default {
   sendNotification,
   saveToken,
   sendNotificationToAll,
+  sendInAppNotification,
 };

@@ -73,7 +73,8 @@ const TemplateSection: React.FC = () => {
             <div ref={resumeSectionRef}>
                 {selectedTemplateId && (
                     <ResumeSection
-                        resumes={filteredResumes || []} 
+                        resumes={filteredResumes || []}
+                        templateId={selectedTemplateId}
                         onCreateCV={() => {
                             console.log("Create CV button clicked");
                         }}

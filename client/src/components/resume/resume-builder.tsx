@@ -1,20 +1,27 @@
 "use client";
 
-import { useState, useCallback } from 'react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { CalendarIcon, PlusIcon, XIcon } from "lucide-react"
-import { format } from "date-fns"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
+import { useState, useCallback, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { CalendarIcon, PlusIcon, XIcon } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // Define TypeScript interfaces
 interface PersonalInfo {
@@ -37,6 +44,7 @@ interface Education {
   startDate: string | null;
   endDate: string | null;
   grade: string;
+  current: boolean;
 }
 
 interface Experience {
@@ -46,6 +54,7 @@ interface Experience {
   startDate: string | null;
   endDate: string | null;
   responsibilities: string;
+  current: boolean;
 }
 
 interface CustomSection {
@@ -72,19 +81,19 @@ interface ResumeData {
 }
 
 export default function ResumeBuilder() {
-  const [activeStep, setActiveStep] = useState(0)
+  const [activeStep, setActiveStep] = useState(0);
   const [resumeData, setResumeData] = useState<ResumeData>({
-    template: '',
+    template: "",
     personalInfo: {
-      firstName: '',
-      lastName: '',
+      firstName: "",
+      lastName: "",
       dateOfBirth: null,
-      email: '',
-      phoneNumber: '',
-      addressLine1: '',
-      addressLine2: '',
-      country: '',
-      description: '',
+      email: "",
+      phoneNumber: "",
+      addressLine1: "",
+      addressLine2: "",
+      country: "",
+      description: "",
     },
     education: [],
     experience: [],
@@ -93,51 +102,41 @@ export default function ResumeBuilder() {
     hobbies: [],
     customSections: [],
     websites: [],
-  })
+  });
 
   const steps = [
-    { title: 'Personal Info', component: <PersonalInfoForm /> },
-    { title: 'Education', component: <EducationForm /> },
-    { title: 'Experience', component: <ExperienceForm /> },
-    { title: 'Skills & Languages', component: <SkillsLanguagesForm /> },
-    { title: 'Custom Sections', component: <CustomSectionsForm /> },
-    { title: 'Websites', component: <WebsitesForm /> },
-  ]
+    { title: "Personal Info", component: <PersonalInfoForm /> },
+    { title: "Education", component: <EducationForm /> },
+    { title: "Experience", component: <ExperienceForm /> },
+    { title: "Skills & Languages", component: <SkillsLanguagesForm /> },
+    { title: "Custom Sections", component: <CustomSectionsForm /> },
+    { title: "Websites", component: <WebsitesForm /> },
+  ];
 
   const handleNext = () => {
-    setActiveStep(prevStep => Math.min(prevStep + 1, steps.length - 1));
+    setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
   };
 
   const handleBack = () => {
-    setActiveStep((prevStep) => Math.max(prevStep - 1, 0))
-  }
+    setActiveStep((prevStep) => Math.max(prevStep - 1, 0));
+  };
 
- 
-   function PersonalInfoForm() {
-    const [resumeData, setResumeData] = useState<{ personalInfo: PersonalInfo }>({
-      personalInfo: {
-        firstName: '',
-        lastName: '',
-        dateOfBirth: '',
-        email: '',
-        phoneNumber: '',
-        addressLine1: '',
-        addressLine2: '',
-        country: '',
-        description: '',
-      },
-    });
-  
-    const updatePersonalInfo = (field: keyof PersonalInfo, value: string) => {
-      setResumeData(prev => ({
+  useEffect(() => {
+    console.log(resumeData);
+  }, [resumeData]);
+
+  function PersonalInfoForm() {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { id, value } = e.target;
+      setResumeData((prev) => ({
         ...prev,
         personalInfo: {
           ...prev.personalInfo,
-          [field]: value,
+          [id]: value,
         },
       }));
     };
-  
+
     return (
       <div className="space-y-4">
         <Card className="p-2">
@@ -148,7 +147,7 @@ export default function ResumeBuilder() {
                 <Input
                   id="firstName"
                   value={resumeData.personalInfo.firstName}
-                  onChange={(e) => updatePersonalInfo('firstName', e.target.value)}
+                  onChange={handleChange}
                   placeholder="Enter your first name"
                 />
               </div>
@@ -157,18 +156,29 @@ export default function ResumeBuilder() {
                 <Input
                   id="lastName"
                   value={resumeData.personalInfo.lastName}
-                  onChange={(e) => updatePersonalInfo('lastName', e.target.value)}
+                  onChange={handleChange}
                   placeholder="Enter your last name"
                 />
               </div>
             </div>
-  
+
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="dateOfBirth">Date of Birth</Label>
                 <DatePicker
-                  date={resumeData.personalInfo.dateOfBirth ? new Date(resumeData.personalInfo.dateOfBirth) : null}
-                  setDate={(date) => updatePersonalInfo('dateOfBirth', date ? date.toISOString().split('T')[0] : '')}
+                  date={
+                    resumeData.personalInfo.dateOfBirth
+                      ? new Date(resumeData.personalInfo.dateOfBirth)
+                      : null
+                  }
+                  setDate={(date) =>
+                    handleChange({
+                      target: {
+                        id: "dateOfBirth",
+                        value: date ? date.toISOString().split("T")[0] : "",
+                      },
+                    } as React.ChangeEvent<HTMLInputElement>)
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -176,20 +186,20 @@ export default function ResumeBuilder() {
                 <Input
                   id="email"
                   value={resumeData.personalInfo.email}
-                  onChange={(e) => updatePersonalInfo('email', e.target.value)}
+                  onChange={handleChange}
                   placeholder="Enter your email"
                   type="email"
                 />
               </div>
             </div>
-  
+
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="phoneNumber">Phone Number</Label>
                 <Input
                   id="phoneNumber"
                   value={resumeData.personalInfo.phoneNumber}
-                  onChange={(e) => updatePersonalInfo('phoneNumber', e.target.value)}
+                  onChange={handleChange}
                   placeholder="Enter your phone number"
                 />
               </div>
@@ -198,19 +208,19 @@ export default function ResumeBuilder() {
                 <Input
                   id="addressLine1"
                   value={resumeData.personalInfo.addressLine1}
-                  onChange={(e) => updatePersonalInfo('addressLine1', e.target.value)}
+                  onChange={handleChange}
                   placeholder="Enter your address"
                 />
               </div>
             </div>
-  
+
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="addressLine2">Address Line 2</Label>
                 <Input
                   id="addressLine2"
                   value={resumeData.personalInfo.addressLine2}
-                  onChange={(e) => updatePersonalInfo('addressLine2', e.target.value)}
+                  onChange={handleChange}
                   placeholder="Enter additional address info"
                 />
               </div>
@@ -219,18 +229,18 @@ export default function ResumeBuilder() {
                 <Input
                   id="country"
                   value={resumeData.personalInfo.country}
-                  onChange={(e) => updatePersonalInfo('country', e.target.value)}
+                  onChange={handleChange}
                   placeholder="Enter your country"
                 />
               </div>
             </div>
-  
+
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
                 value={resumeData.personalInfo.description}
-                onChange={(e) => updatePersonalInfo('description', e.target.value)}
+                onChange={handleChange}
                 placeholder="Enter a brief description"
               />
             </div>
@@ -239,49 +249,57 @@ export default function ResumeBuilder() {
       </div>
     );
   }
-
   function EducationForm() {
     const [newEducation, setNewEducation] = useState<Education>({
-      institution: '',
-      degree: '',
-      fieldOfStudy: '',
+      institution: "",
+      degree: "",
+      fieldOfStudy: "",
       startDate: null,
       endDate: null,
-      grade: ''
-    })
+      grade: "",
+      current: false,
+    });
 
     const addEducation = () => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        education: [...prev.education, { ...newEducation, id: Date.now() }]
-      }))
+        education: [
+          ...prev.education,
+          { ...newEducation, id: Date.now(), endDate: newEducation.current ? null : newEducation.endDate },
+        ],
+      }));
       setNewEducation({
-        institution: '',
-        degree: '',
-        fieldOfStudy: '',
+        institution: "",
+        degree: "",
+        fieldOfStudy: "",
         startDate: null,
         endDate: null,
-        grade: ''
-      })
-    }
+        grade: "",
+        current: false,
+      });
+    };
 
     const removeEducation = (id: number) => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        education: prev.education.filter(edu => edu.id !== id)
-      }))
-    }
+        education: prev.education.filter((edu) => edu.id !== id),
+      }));
+    };
+
+    const updateField = (field: keyof Education, value: any) => {
+      setNewEducation((prev) => ({ ...prev, [field]: value }));
+    };
 
     return (
       <div className="space-y-4">
-        <Card className='p-2'>
+        <Card className="p-2">
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="institution">Institution</Label>
               <Input
                 id="institution"
                 value={newEducation.institution}
-                onChange={(e) => setNewEducation({ ...newEducation, institution: e.target.value })}
+                onChange={(e) => updateField("institution", e.target.value)}
                 placeholder="Enter institution name"
               />
             </div>
@@ -290,7 +308,7 @@ export default function ResumeBuilder() {
               <Input
                 id="degree"
                 value={newEducation.degree}
-                onChange={(e) => setNewEducation({ ...newEducation, degree: e.target.value })}
+                onChange={(e) => updateField("degree", e.target.value)}
                 placeholder="Enter degree"
               />
             </div>
@@ -299,34 +317,64 @@ export default function ResumeBuilder() {
               <Input
                 id="fieldOfStudy"
                 value={newEducation.fieldOfStudy}
-                onChange={(e) => setNewEducation({ ...newEducation, fieldOfStudy: e.target.value })}
+                onChange={(e) => updateField("fieldOfStudy", e.target.value)}
                 placeholder="Enter field of study"
               />
             </div>
             <div className="space-y-2">
               <Label>Start Date</Label>
               <DatePicker
-                date={newEducation.startDate ? new Date(newEducation.startDate) : null}
-                setDate={(date) => setNewEducation({ ...newEducation, startDate: date ? date.toISOString().split('T')[0] : null })}
+                date={
+                  newEducation.startDate
+                    ? new Date(newEducation.startDate)
+                    : null
+                }
+                setDate={(date) =>
+                  updateField(
+                    "startDate",
+                    date ? date.toISOString().split("T")[0] : null
+                  )
+                }
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 flex items-center">
               <Label>End Date</Label>
               <DatePicker
-                date={newEducation.endDate ? new Date(newEducation.endDate) : null}
-                setDate={(date) => setNewEducation({ ...newEducation, endDate: date ? date.toISOString().split('T')[0] : null })}
+                date={
+                  newEducation.endDate ? new Date(newEducation.endDate) : null
+                }
+                setDate={(date) =>
+                  updateField(
+                    "endDate",
+                    date ? date.toISOString().split("T")[0] : null
+                  )
+                }
+                disabled={newEducation.current}
               />
+              <Checkbox
+                id="current"
+                checked={newEducation.current}
+                onCheckedChange={(checked) =>
+                  updateField("current", checked as boolean)
+                }
+                className="ml-4"
+              />
+              <Label htmlFor="current" className="ml-2">
+                Current
+              </Label>
             </div>
             <div className="space-y-2">
               <Label htmlFor="grade">Grade</Label>
               <Input
                 id="grade"
                 value={newEducation.grade}
-                onChange={(e) => setNewEducation({ ...newEducation, grade: e.target.value })}
+                onChange={(e) => updateField("grade", e.target.value)}
                 placeholder="Enter grade"
               />
             </div>
-            <Button onClick={addEducation} className="w-full">Add Education</Button>
+            <Button onClick={addEducation} className="w-full">
+              Add Education
+            </Button>
           </CardContent>
         </Card>
         {resumeData.education.map((edu) => (
@@ -334,64 +382,87 @@ export default function ResumeBuilder() {
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 {edu.institution}
-                <Button variant="ghost" size="icon" onClick={() => removeEducation(edu.id!)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeEducation(edu.id!)}
+                >
                   <XIcon className="h-4 w-4" />
                 </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p><strong>Degree:</strong> {edu.degree}</p>
-              <p><strong>Field of Study:</strong> {edu.fieldOfStudy}</p>
-              <p><strong>Start Date:</strong> {edu.startDate || 'Not specified'}</p>
-              <p><strong>End Date:</strong> {edu.endDate || 'Not specified'}</p>
-              <p><strong>Grade:</strong> {edu.grade}</p>
+              <p>
+                <strong>Degree:</strong> {edu.degree}
+              </p>
+              <p>
+                <strong>Field of Study:</strong> {edu.fieldOfStudy}
+              </p>
+              <p>
+                <strong>Start Date:</strong> {edu.startDate || "Not specified"}
+              </p>
+              <p>
+                <strong>End Date:</strong> {edu.endDate || "Not specified"}
+              </p>
+              <p>
+                <strong>Grade:</strong> {edu.grade}
+              </p>
             </CardContent>
           </Card>
         ))}
       </div>
-    )
+    );
   }
 
   function ExperienceForm() {
     const [newExperience, setNewExperience] = useState<Experience>({
-      jobTitle: '',
-      companyName: '',
+      jobTitle: "",
+      companyName: "",
       startDate: null,
       endDate: null,
-      responsibilities: ''
-    })
+      responsibilities: "",
+      current: false,
+    });
 
     const addExperience = () => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        experience: [...prev.experience, { ...newExperience, id: Date.now() }]
-      }))
+        experience: [
+          ...prev.experience,
+          { ...newExperience, id: Date.now(), endDate: newExperience.current ? null : newExperience.endDate },
+        ],
+      }));
       setNewExperience({
-        jobTitle: '',
-        companyName: '',
+        jobTitle: "",
+        companyName: "",
         startDate: null,
         endDate: null,
-        responsibilities: ''
-      })
-    }
+        responsibilities: "",
+        current: false,
+      });
+    };
 
     const removeExperience = (id: number) => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        experience: prev.experience.filter(exp => exp.id !== id)
-      }))
-    }
+        experience: prev.experience.filter((exp) => exp.id !== id),
+      }));
+    };
+
+    const updateField = (field: keyof Experience, value: any) => {
+      setNewExperience((prev) => ({ ...prev, [field]: value }));
+    };
 
     return (
       <div className="space-y-4">
-        <Card className='p-2'>
+        <Card className="p-2">
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="jobTitle">Job Title</Label>
               <Input
                 id="jobTitle"
                 value={newExperience.jobTitle}
-                onChange={(e) => setNewExperience({ ...newExperience, jobTitle: e.target.value })}
+                onChange={(e) => updateField("jobTitle", e.target.value)}
                 placeholder="Enter job title"
               />
             </div>
@@ -400,34 +471,64 @@ export default function ResumeBuilder() {
               <Input
                 id="companyName"
                 value={newExperience.companyName}
-                onChange={(e) => setNewExperience({ ...newExperience, companyName: e.target.value })}
+                onChange={(e) => updateField("companyName", e.target.value)}
                 placeholder="Enter company name"
               />
             </div>
             <div className="space-y-2">
               <Label>Start Date</Label>
               <DatePicker
-                date={newExperience.startDate ? new Date(newExperience.startDate) : null}
-                setDate={(date) => setNewExperience({ ...newExperience, startDate: date ? date.toISOString().split('T')[0] : null })}
+                date={
+                  newExperience.startDate
+                    ? new Date(newExperience.startDate)
+                    : null
+                }
+                setDate={(date) =>
+                  updateField(
+                    "startDate",
+                    date ? date.toISOString().split("T")[0] : null
+                  )
+                }
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 flex items-center">
               <Label>End Date</Label>
               <DatePicker
-                date={newExperience.endDate ? new Date(newExperience.endDate) : null}
-                setDate={(date) => setNewExperience({ ...newExperience, endDate: date ? date.toISOString().split('T')[0] : null })}
+                date={
+                  newExperience.endDate ? new Date(newExperience.endDate) : null
+                }
+                setDate={(date) =>
+                  updateField(
+                    "endDate",
+                    date ? date.toISOString().split("T")[0] : null
+                  )
+                }
+                disabled={newExperience.current}
               />
+              <Checkbox
+                id="currentExperience"
+                checked={newExperience.current}
+                onCheckedChange={(checked) =>
+                  updateField("current", checked as boolean)
+                }
+                className="ml-4"
+              />
+              <Label htmlFor="currentExperience" className="ml-2">
+                Current
+              </Label>
             </div>
             <div className="space-y-2">
               <Label htmlFor="responsibilities">Responsibilities</Label>
               <Textarea
                 id="responsibilities"
                 value={newExperience.responsibilities}
-                onChange={(e) => setNewExperience({ ...newExperience, responsibilities: e.target.value })}
+                onChange={(e) => updateField("responsibilities", e.target.value)}
                 placeholder="Enter job responsibilities"
               />
             </div>
-            <Button onClick={addExperience} className="w-full">Add Experience</Button>
+            <Button onClick={addExperience} className="w-full">
+              Add Experience
+            </Button>
           </CardContent>
         </Card>
         {resumeData.experience.map((exp) => (
@@ -435,75 +536,85 @@ export default function ResumeBuilder() {
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 {exp.jobTitle} at {exp.companyName}
-                <Button variant="ghost" size="icon" onClick={() => removeExperience(exp.id!)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeExperience(exp.id!)}
+                >
                   <XIcon className="h-4 w-4" />
                 </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p><strong>Start Date:</strong> {exp.startDate || 'Not specified'}</p>
-              <p><strong>End Date:</strong> {exp.endDate || 'Not specified'}</p>
-              <p><strong>Responsibilities:</strong> {exp.responsibilities}</p>
+              <p>
+                <strong>Start Date:</strong> {exp.startDate || "Not specified"}
+              </p>
+              <p>
+                <strong>End Date:</strong> {exp.endDate || "Not specified"}
+              </p>
+              <p>
+                <strong>Responsibilities:</strong> {exp.responsibilities}
+              </p>
             </CardContent>
           </Card>
         ))}
       </div>
-    )
+    );
   }
 
   function SkillsLanguagesForm() {
-    const [newSkill, setNewSkill] = useState('')
-    const [newLanguage, setNewLanguage] = useState('')
-    const [newHobby, setNewHobby] = useState('')
+    const [newSkill, setNewSkill] = useState("");
+    const [newLanguage, setNewLanguage] = useState("");
+    const [newHobby, setNewHobby] = useState("");
 
     const addSkill = () => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        skills: [...prev.skills, newSkill]
-      }))
-      setNewSkill('')
-    }
+        skills: [...prev.skills, newSkill],
+      }));
+      setNewSkill("");
+    };
 
     const removeSkill = (skill: string) => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        skills: prev.skills.filter(s => s !== skill)
-      }))
-    }
+        skills: prev.skills.filter((s) => s !== skill),
+      }));
+    };
 
     const addLanguage = () => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        languages: [...prev.languages, newLanguage]
-      }))
-      setNewLanguage('')
-    }
+        languages: [...prev.languages, newLanguage],
+      }));
+      setNewLanguage("");
+    };
 
     const removeLanguage = (language: string) => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        languages: prev.languages.filter(l => l !== language)
-      }))
-    }
+        languages: prev.languages.filter((l) => l !== language),
+      }));
+    };
 
     const addHobby = () => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        hobbies: [...prev.hobbies, newHobby]
-      }))
-      setNewHobby('')
-    }
+        hobbies: [...prev.hobbies, newHobby],
+      }));
+      setNewHobby("");
+    };
 
     const removeHobby = (hobby: string) => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        hobbies: prev.hobbies.filter(h => h !== hobby)
-      }))
-    }
+        hobbies: prev.hobbies.filter((h) => h !== hobby),
+      }));
+    };
 
     return (
       <div className="space-y-4">
-        <Card className='p-2'>
+        <Card className="p-2">
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="skills">Skills</Label>
@@ -595,29 +706,34 @@ export default function ResumeBuilder() {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   function CustomSectionsForm() {
     const [newSection, setNewSection] = useState<CustomSection>({
-      title: '',
-      content: ''
-    })
+      title: "",
+      content: "",
+    });
 
     const addSection = () => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        customSections: [...prev.customSections, { ...newSection, id: Date.now() }]
-      }))
-      setNewSection({ title: '', content: '' })
-    }
+        customSections: [
+          ...prev.customSections,
+          { ...newSection, id: Date.now() },
+        ],
+      }));
+      setNewSection({ title: "", content: "" });
+    };
 
     const removeSection = (id: number) => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        customSections: prev.customSections.filter(section => section.id !== id)
-      }))
-    }
+        customSections: prev.customSections.filter(
+          (section) => section.id !== id
+        ),
+      }));
+    };
 
     return (
       <div className="space-y-4">
@@ -628,7 +744,9 @@ export default function ResumeBuilder() {
               <Input
                 id="sectionTitle"
                 value={newSection.title}
-                onChange={(e) => setNewSection({ ...newSection, title: e.target.value })}
+                onChange={(e) =>
+                  setNewSection({ ...newSection, title: e.target.value })
+                }
                 placeholder="Enter section title"
               />
             </div>
@@ -637,11 +755,15 @@ export default function ResumeBuilder() {
               <Textarea
                 id="sectionContent"
                 value={newSection.content}
-                onChange={(e) => setNewSection({ ...newSection, content: e.target.value })}
+                onChange={(e) =>
+                  setNewSection({ ...newSection, content: e.target.value })
+                }
                 placeholder="Enter section content"
               />
             </div>
-            <Button onClick={addSection} className="w-full">Add Section</Button>
+            <Button onClick={addSection} className="w-full">
+              Add Section
+            </Button>
           </CardContent>
         </Card>
         {resumeData.customSections.map((section) => (
@@ -649,7 +771,11 @@ export default function ResumeBuilder() {
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 {section.title}
-                <Button variant="ghost" size="icon" onClick={() => removeSection(section.id!)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeSection(section.id!)}
+                >
                   <XIcon className="h-4 w-4" />
                 </Button>
               </CardTitle>
@@ -660,40 +786,42 @@ export default function ResumeBuilder() {
           </Card>
         ))}
       </div>
-    )
+    );
   }
 
   function WebsitesForm() {
     const [newWebsite, setNewWebsite] = useState<Website>({
-      name: '',
-      url: ''
-    })
+      name: "",
+      url: "",
+    });
 
     const addWebsite = () => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        websites: [...prev.websites, newWebsite]
-      }))
-      setNewWebsite({ name: '', url: '' })
-    }
+        websites: [...prev.websites, newWebsite],
+      }));
+      setNewWebsite({ name: "", url: "" });
+    };
 
     const removeWebsite = (url: string) => {
-      setResumeData(prev => ({
+      setResumeData((prev) => ({
         ...prev,
-        websites: prev.websites.filter(website => website.url !== url)
-      }))
-    }
+        websites: prev.websites.filter((website) => website.url !== url),
+      }));
+    };
 
     return (
       <div className="space-y-4">
-        <Card className='p-2'>
+        <Card className="p-2">
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="websiteName">Website Name</Label>
               <Input
                 id="websiteName"
                 value={newWebsite.name}
-                onChange={(e) => setNewWebsite({ ...newWebsite, name: e.target.value })}
+                onChange={(e) =>
+                  setNewWebsite({ ...newWebsite, name: e.target.value })
+                }
                 placeholder="Enter website name"
               />
             </div>
@@ -702,12 +830,16 @@ export default function ResumeBuilder() {
               <Input
                 id="websiteUrl"
                 value={newWebsite.url}
-                onChange={(e) => setNewWebsite({ ...newWebsite, url: e.target.value })}
+                onChange={(e) =>
+                  setNewWebsite({ ...newWebsite, url: e.target.value })
+                }
                 placeholder="Enter website URL"
                 type="url"
               />
             </div>
-            <Button onClick={addWebsite} className="w-full">Add Website</Button>
+            <Button onClick={addWebsite} className="w-full">
+              Add Website
+            </Button>
           </CardContent>
         </Card>
         {resumeData.websites.map((website, index) => (
@@ -715,27 +847,45 @@ export default function ResumeBuilder() {
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 {website.name}
-                <Button variant="ghost" size="icon" onClick={() => removeWebsite(website.url)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeWebsite(website.url)}
+                >
                   <XIcon className="h-4 w-4" />
                 </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p><a href={website.url} target="_blank" rel="noopener noreferrer">{website.url}</a></p>
+              <p>
+                <a
+                  href={website.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {website.url}
+                </a>
+              </p>
             </CardContent>
           </Card>
         ))}
       </div>
-    )
+    );
   }
 
-  function DatePicker({ date, setDate }: { date: Date | null, setDate: (date: Date | null) => void }) {
+  function DatePicker({
+    date,
+    setDate,
+    disabled = false,
+  }: {
+    date: Date | null;
+    setDate: (date: Date | null) => void;
+    disabled?: boolean;
+  }) {
     const handleDateSelect = (selectedDate: Date | undefined) => {
-      // Convert undefined to null to match your `setDate` function's expected type
       setDate(selectedDate || null);
     };
-  
-    ///test213213
+
     return (
       <Popover>
         <PopoverTrigger asChild>
@@ -745,6 +895,7 @@ export default function ResumeBuilder() {
               "w-full justify-start text-left font-normal",
               !date && "text-muted-foreground"
             )}
+            disabled={disabled}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {date ? format(date, "PPP") : <span>Pick a date</span>}
@@ -753,30 +904,34 @@ export default function ResumeBuilder() {
         <PopoverContent className="w-auto p-0">
           <Calendar
             mode="single"
-            selected={date || undefined}  
-            onSelect={handleDateSelect} 
+            selected={date || undefined}
+            onSelect={handleDateSelect}
             initialFocus
           />
         </PopoverContent>
       </Popover>
-    )
+    );
   }
-  
 
-  function Badge({ children, variant, className, ...props }: React.HTMLAttributes<HTMLSpanElement> & { variant?: string }) {
+  function Badge({
+    children,
+    variant,
+    className,
+    ...props
+  }: React.HTMLAttributes<HTMLSpanElement> & { variant?: string }) {
     return (
       <span
         className={cn(
           "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
           variant === "secondary" &&
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+            "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
           className
         )}
         {...props}
       >
         {children}
       </span>
-    )
+    );
   }
 
   return (
@@ -786,19 +941,24 @@ export default function ResumeBuilder() {
           {steps.map((step, index) => (
             <div
               key={index}
-              className={`flex items-center ${index < steps.length - 1 ? 'flex-1' : ''
-                }`}
+              className={`flex items-center ${
+                index < steps.length - 1 ? "flex-1" : ""
+              }`}
             >
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${index <= activeStep ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
-                  }`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  index <= activeStep
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground"
+                }`}
               >
                 {index + 1}
               </div>
               {index < steps.length - 1 && (
                 <div
-                  className={`h-1 flex-1 mx-2 ${index < activeStep ? 'bg-primary' : 'bg-muted'
-                    }`}
+                  className={`h-1 flex-1 mx-2 ${
+                    index < activeStep ? "bg-primary" : "bg-muted"
+                  }`}
                 />
               )}
             </div>
@@ -815,9 +975,9 @@ export default function ResumeBuilder() {
           Back
         </Button>
         <Button onClick={handleNext}>
-          {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+          {activeStep === steps.length - 1 ? "Finish" : "Next"}
         </Button>
       </CardFooter>
     </div>
-  )
+  );
 }

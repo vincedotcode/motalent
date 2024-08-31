@@ -1,15 +1,55 @@
-import React from 'react';
+/* eslint-disable @next/next/no-img-element */
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 import { Job } from '@/helper/types';
-import { BriefcaseBusiness, LocateFixed, DollarSign, Hand, Binary } from "lucide-react";
+import { BriefcaseBusiness } from "lucide-react";
+import JobApplication from '@/components/jobs/job-application';
+import { getUserData } from '@/hooks/useAuth';
+import AlertModal from '@/components/shared/alert';
 
 interface JobDetailsProps {
   job: Job | null;
 }
 
 const JobDetails: React.FC<JobDetailsProps> = ({ job }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const user = getUserData();
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
+  const [alertProps, setAlertProps] = useState<{
+    title: string;
+    message: string;
+    type: 'success' | 'error';
+  }>({
+    title: '',
+    message: '',
+    type: 'success',
+  });
+
+  useEffect(() => {
+    if (user && job) {
+      const userHasApplied = job.applicants.some(applicant => applicant._id === user._id);
+      setHasApplied(userHasApplied);
+    }
+  }, [user, job]);
+  const handleApplyClick = () => {
+    if (!user) {
+      setAlertProps({
+        title: 'Not Logged In',
+        message: 'You must be logged in to perform this action.',
+        type: 'error',
+      });
+      setIsAlertOpen(true);
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   if (!job) {
     return <div className="text-center text-gray-500">Select a job to see the details</div>;
   }
@@ -49,8 +89,20 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job }) => {
             <Badge>Status: {job.status}</Badge>
           </div>
           <div className="flex mt-4">
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary me-5">Apply Now</Button>
-            <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 focus:ring-secondary">Save</Button>
+            <Button
+              className={`${
+                hasApplied
+                  ? "bg-green-600 text-white hover:bg-green-700"
+                  : "bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary"
+              } me-5`}
+              onClick={handleApplyClick}
+              disabled={hasApplied}
+            >
+              {hasApplied ? "Application Submitted" : "Apply Now"}
+            </Button>
+            <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 focus:ring-secondary">
+              Save
+            </Button>
           </div>
         </div>
       </div>
@@ -111,8 +163,16 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job }) => {
         <p><strong>Employees:</strong> {job.company.numberOfEmployees}</p>
         <p><strong>Average Rating:</strong> {job.company.averageRating}</p>
       </div>
+      <JobApplication isOpen={isModalOpen} onClose={handleCloseModal} jobId={job._id} />
+      <AlertModal
+        isOpen={isAlertOpen}
+        onClose={() => setIsAlertOpen(false)}
+        title={alertProps.title}
+        message={alertProps.message}
+        type={alertProps.type}
+      />
     </div>
   );
-}
+};
 
 export default JobDetails;
