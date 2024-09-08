@@ -22,12 +22,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { useSearchParams } from 'next/navigation'
+import { createResume } from "@/services/resume";
+import { getUserData } from "@/hooks/useAuth";
 // Define TypeScript interfaces
 interface PersonalInfo {
   firstName: string;
   lastName: string;
-  dateOfBirth: string | null;
+  dateOfBirth: string;
   email: string;
   phoneNumber: string;
   addressLine1: string;
@@ -46,6 +48,8 @@ interface Education {
   grade: string;
   current: boolean;
 }
+
+
 
 interface Experience {
   id?: number;
@@ -82,12 +86,18 @@ interface ResumeData {
 
 export default function ResumeBuilder() {
   const [activeStep, setActiveStep] = useState(0);
+  const searchParams = useSearchParams()
+  const user = getUserData()
+  const id = user?._id
+  const template = searchParams.get('templateid')
+
+
   const [resumeData, setResumeData] = useState<ResumeData>({
-    template: "",
+    template: template ? template : "",
     personalInfo: {
       firstName: "",
       lastName: "",
-      dateOfBirth: null,
+      dateOfBirth: "",
       email: "",
       phoneNumber: "",
       addressLine1: "",
@@ -103,7 +113,6 @@ export default function ResumeBuilder() {
     customSections: [],
     websites: [],
   });
-
   const steps = [
     { title: "Personal Info", component: <PersonalInfoForm /> },
     { title: "Education", component: <EducationForm /> },
@@ -125,17 +134,45 @@ export default function ResumeBuilder() {
     console.log(resumeData);
   }, [resumeData]);
 
+  const handleFinish = async () => {
+    try {
+      const createdResume = await createResume(id as string, resumeData);
+      console.log("Resume created successfully:", createdResume);
+
+    } catch (error) {
+      console.error("Error creating resume:", error);
+    }
+  };
+
   function PersonalInfoForm() {
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const { id, value } = e.target;
+
+    const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
+      firstName: "",
+      lastName: "",
+      dateOfBirth: "",
+      email: "",
+      phoneNumber: "",
+      addressLine1: "",
+      addressLine2: "",
+      country: "",
+      description: "",
+    });
+
+    const updateField = (field: keyof PersonalInfo, value: any) => {
+      setPersonalInfo((prev) => ({ ...prev, [field]: value }));
+    };
+
+
+    const savePersonalInfo = () => {
       setResumeData((prev) => ({
         ...prev,
         personalInfo: {
-          ...prev.personalInfo,
-          [id]: value,
+          ...personalInfo,
         },
       }));
     };
+
+
 
     return (
       <div className="space-y-4">
@@ -146,8 +183,8 @@ export default function ResumeBuilder() {
                 <Label htmlFor="firstName">First Name</Label>
                 <Input
                   id="firstName"
-                  value={resumeData.personalInfo.firstName}
-                  onChange={handleChange}
+                  value={personalInfo.firstName}
+                  onChange={(e) => updateField("firstName", e.target.value)}
                   placeholder="Enter your first name"
                 />
               </div>
@@ -155,8 +192,8 @@ export default function ResumeBuilder() {
                 <Label htmlFor="lastName">Last Name</Label>
                 <Input
                   id="lastName"
-                  value={resumeData.personalInfo.lastName}
-                  onChange={handleChange}
+                  value={personalInfo.lastName}
+                  onChange={(e) => updateField("lastName", e.target.value)}
                   placeholder="Enter your last name"
                 />
               </div>
@@ -166,18 +203,12 @@ export default function ResumeBuilder() {
               <div className="space-y-2">
                 <Label htmlFor="dateOfBirth">Date of Birth</Label>
                 <DatePicker
-                  date={
-                    resumeData.personalInfo.dateOfBirth
-                      ? new Date(resumeData.personalInfo.dateOfBirth)
-                      : null
-                  }
+                  date={personalInfo.dateOfBirth ? new Date(personalInfo.dateOfBirth) : null}
                   setDate={(date) =>
-                    handleChange({
-                      target: {
-                        id: "dateOfBirth",
-                        value: date ? date.toISOString().split("T")[0] : "",
-                      },
-                    } as React.ChangeEvent<HTMLInputElement>)
+                    updateField(
+                      "dateOfBirth",
+                      date ? date.toISOString().split("T")[0] : null
+                    )
                   }
                 />
               </div>
@@ -185,8 +216,8 @@ export default function ResumeBuilder() {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
-                  value={resumeData.personalInfo.email}
-                  onChange={handleChange}
+                  value={personalInfo.email}
+                  onChange={(e) => updateField("email", e.target.value)}
                   placeholder="Enter your email"
                   type="email"
                 />
@@ -198,8 +229,8 @@ export default function ResumeBuilder() {
                 <Label htmlFor="phoneNumber">Phone Number</Label>
                 <Input
                   id="phoneNumber"
-                  value={resumeData.personalInfo.phoneNumber}
-                  onChange={handleChange}
+                  value={personalInfo.phoneNumber}
+                  onChange={(e) => updateField("phoneNumber", e.target.value)}
                   placeholder="Enter your phone number"
                 />
               </div>
@@ -207,8 +238,8 @@ export default function ResumeBuilder() {
                 <Label htmlFor="addressLine1">Address Line 1</Label>
                 <Input
                   id="addressLine1"
-                  value={resumeData.personalInfo.addressLine1}
-                  onChange={handleChange}
+                  value={personalInfo.addressLine1}
+                  onChange={(e) => updateField("addressLine1", e.target.value)}
                   placeholder="Enter your address"
                 />
               </div>
@@ -219,8 +250,8 @@ export default function ResumeBuilder() {
                 <Label htmlFor="addressLine2">Address Line 2</Label>
                 <Input
                   id="addressLine2"
-                  value={resumeData.personalInfo.addressLine2}
-                  onChange={handleChange}
+                  value={personalInfo.addressLine2}
+                  onChange={(e) => updateField("addressLine2", e.target.value)}
                   placeholder="Enter additional address info"
                 />
               </div>
@@ -228,8 +259,8 @@ export default function ResumeBuilder() {
                 <Label htmlFor="country">Country</Label>
                 <Input
                   id="country"
-                  value={resumeData.personalInfo.country}
-                  onChange={handleChange}
+                  value={personalInfo.country}
+                  onChange={(e) => updateField("country", e.target.value)}
                   placeholder="Enter your country"
                 />
               </div>
@@ -239,11 +270,15 @@ export default function ResumeBuilder() {
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
-                value={resumeData.personalInfo.description}
-                onChange={handleChange}
+                value={personalInfo.description}
+                onChange={(e) => updateField("description", e.target.value)}
                 placeholder="Enter a brief description"
               />
             </div>
+
+            <Button onClick={savePersonalInfo} className="w-full">
+              Save Personal Information
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -924,7 +959,7 @@ export default function ResumeBuilder() {
         className={cn(
           "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
           variant === "secondary" &&
-            "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
           className
         )}
         {...props}
@@ -941,24 +976,21 @@ export default function ResumeBuilder() {
           {steps.map((step, index) => (
             <div
               key={index}
-              className={`flex items-center ${
-                index < steps.length - 1 ? "flex-1" : ""
-              }`}
+              className={`flex items-center ${index < steps.length - 1 ? "flex-1" : ""
+                }`}
             >
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  index <= activeStep
+                className={`w-8 h-8 rounded-full flex items-center justify-center ${index <= activeStep
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground"
-                }`}
+                  }`}
               >
                 {index + 1}
               </div>
               {index < steps.length - 1 && (
                 <div
-                  className={`h-1 flex-1 mx-2 ${
-                    index < activeStep ? "bg-primary" : "bg-muted"
-                  }`}
+                  className={`h-1 flex-1 mx-2 ${index < activeStep ? "bg-primary" : "bg-muted"
+                    }`}
                 />
               )}
             </div>
@@ -974,7 +1006,7 @@ export default function ResumeBuilder() {
         <Button onClick={handleBack} disabled={activeStep === 0}>
           Back
         </Button>
-        <Button onClick={handleNext}>
+        <Button onClick={activeStep === steps.length - 1 ? handleFinish : handleNext}>
           {activeStep === steps.length - 1 ? "Finish" : "Next"}
         </Button>
       </CardFooter>

@@ -83,7 +83,7 @@ export interface Job {
 export interface JobApplication {
     _id: string;
     job: Job;
-    applicant: string;
+    applicant: User;
     resume: Resume;
     coverLetter: string;
     currentStatus: string;

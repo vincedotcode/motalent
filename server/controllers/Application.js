@@ -68,6 +68,17 @@ const addAssessmentToApplication = async (req, res) => {
     }
 };
 
+const getApplicationById = async (req, res) => {
+    try {
+        const application = await applicationService.getApplicationById(req.params.applicationId);
+        res.json({ data: application });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
+
 export default {
     createJobApplication,
     getApplicationsByUserId,
@@ -76,4 +87,5 @@ export default {
     assignReviewerToApplication,
     addInterviewToApplication,
     addAssessmentToApplication,
+    getApplicationById,
 };

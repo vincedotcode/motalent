@@ -66,6 +66,29 @@ router.get('/user', authenticateToken, applicationController.getApplicationsByUs
 
 /**
  * @swagger
+ * /api/applications/{applicationId}:
+ *   get:
+ *     tags: [Applications]
+ *     summary: Get application by ID
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: applicationId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Application fetched successfully
+ *       400:
+ *         description: Error message
+ */
+router.get('/:applicationId', authenticateToken, applicationController.getApplicationById);
+
+
+/**
+ * @swagger
  * /api/applications/job/{jobId}:
  *   get:
  *     tags: [Applications]

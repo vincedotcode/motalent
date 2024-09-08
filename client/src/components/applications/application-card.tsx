@@ -11,6 +11,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { JobApplication } from "@/helper/types";
+import Link from "next/link";
 
 type ApplicationStatus = 'Submitted' | 'Under Review' | 'Interview Scheduled' | 'Offer Extended' | 'Rejected' | 'Withdrawn' | 'Background Check' | 'Offer Negotiation';
 
@@ -54,7 +55,7 @@ interface JobApplicationCardProps {
 }
 
 export default function JobApplicationCard({ application }: JobApplicationCardProps) {
-    const { job, resume, currentStatus, submittedAt } = application;
+    const { _id, job, resume, currentStatus, submittedAt } = application;
 
     return (
         <motion.div
@@ -162,9 +163,12 @@ export default function JobApplicationCard({ application }: JobApplicationCardPr
                         </motion.div>
                     </CardContent>
                     <CardFooter className="flex justify-between bg-white dark:bg-gray-900">
-                        <Button className="w-full mr-2 bg-[#3B82F6] text-white hover:bg-[#2563EB] dark:bg-[#1D4ED8] dark:hover:bg-[#1E40AF] transition-all duration-300">
-                            View Application
-                        </Button>
+                        <Link href={`/profile/applications/${_id}`}>
+                            <Button className="w-full mr-2 bg-[#3B82F6] text-white hover:bg-[#2563EB] dark:bg-[#1D4ED8] dark:hover:bg-[#1E40AF] transition-all duration-300">
+                                View Application
+                            </Button>
+
+                        </Link>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" size="icon" className="hover:bg-blue-50 dark:hover:bg-blue-900 transition-colors duration-300 border-[#3B82F6] text-[#3B82F6] dark:border-[#60A5FA] dark:text-[#60A5FA]">

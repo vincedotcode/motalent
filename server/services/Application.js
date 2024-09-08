@@ -77,6 +77,23 @@ const addAssessmentToApplication = async (applicationId, assessmentResult) => {
     return application;
 };
 
+const getApplicationById = async (applicationId) => {
+    // Find the job application by its ID and populate related fields
+    const application = await JobApplication.findById(applicationId)
+        .populate('applicant')
+        .populate('job')
+        .populate('resume');
+
+    // If no application is found, throw an error
+    if (!application) {
+        throw new Error('Application not found');
+    }
+
+    // Return the found application
+    return application;
+};
+
+
 export default {
     createJobApplication,
     getApplicationsByUserId,
@@ -85,4 +102,5 @@ export default {
     assignReviewerToApplication,
     addInterviewToApplication,
     addAssessmentToApplication,
+    getApplicationById,
 };

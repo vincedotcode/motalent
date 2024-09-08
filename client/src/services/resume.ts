@@ -18,22 +18,26 @@ export interface PersonalInfo {
     description?: string;
 }
 
-export interface Education {
+interface Education {
+    id?: number;
     institution: string;
     degree: string;
     fieldOfStudy: string;
-    startDate: string;
-    endDate: string;
-    grade?: string;
-}
+    startDate: string | null;
+    endDate: string | null;
+    grade: string;
+    current: boolean;
+  }
 
-export interface Experience {
+  interface Experience {
+    id?: number;
     jobTitle: string;
     companyName: string;
-    startDate: string;
-    endDate: string;
+    startDate: string | null;
+    endDate: string | null;
     responsibilities: string;
-}
+    current: boolean;
+  }
 
 export interface CustomSection {
     title: string;
