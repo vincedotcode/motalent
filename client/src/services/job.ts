@@ -1,39 +1,11 @@
 import api from '@/helper/api';
 import { AxiosError } from 'axios';
-import {Job} from '@/helper/types';
+import {Job, CreateJobData} from '@/helper/types';
+
 interface ApiResponse {
     message: string[];
     error: string;
 }
-
-interface Company {
-    _id: string;
-    name: string;
-    description: string;
-    website: string;
-    addressLine1: string;
-    addressLine2: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-    phoneNumber: string;
-    email: string;
-    logo: string;
-    bannerImage: string;
-    foundedDate: string;
-    numberOfEmployees: number;
-    industry: string;
-    recruiter: string;
-    affiliatedRecruiters: string[];
-    ratings: any[];
-    averageRating: number;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-    id: string;
-}
-
 
 
 export const getAllJobs = async (): Promise<Job[]> => {
@@ -64,9 +36,9 @@ export const getJobById = async (jobId: string): Promise<Job> => {
     }
 };
 
-export const createJob = async (jobData: Partial<Job>): Promise<Job> => {
+export const createJob = async (jobData: Partial<CreateJobData>): Promise<CreateJobData> => {
     try {
-        const response = await api.post<Job>('/jobs', jobData);
+        const response = await api.post<CreateJobData>('/jobs', jobData);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {

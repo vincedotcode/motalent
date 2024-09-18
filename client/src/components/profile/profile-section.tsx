@@ -29,7 +29,7 @@ export const projects = [
   {
     title: "Worker's Rights",
     description: "Learn about your rights as a worker and how to protect yourself in the workplace.",
-    link: "/workers-rights",
+    link: "/profile/rights-act",
     icon: Shield,
   },
   {

@@ -1,6 +1,6 @@
 import api from '@/helper/api';
 import { AxiosError } from 'axios';
-
+import { CreateCompany } from '@/helper/types';
 interface ApiResponse {
     message: string[];
     error: string;
@@ -28,6 +28,7 @@ export interface Company {
     createdAt: string;
     updatedAt: string;
 }
+
 
 export const getAllCompanies = async (): Promise<Company[]> => {
     try {
@@ -57,9 +58,9 @@ export const getCompanyById = async (companyId: string): Promise<Company> => {
     }
 };
 
-export const createCompany = async (companyData: Partial<Company>): Promise<Company> => {
+export const createCompany = async (companyData: Partial<CreateCompany>): Promise<CreateCompany> => {
     try {
-        const response = await api.post<Company>('/companies', companyData);
+        const response = await api.post<CreateCompany>('/companies', companyData);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {

@@ -79,6 +79,72 @@ export interface Job {
     __v: number;
 }
 
+// Define types for enumerations
+const typeOptions = ['Full-time', 'Part-time', 'Contract', 'Temporary', 'Internship'] as const;
+type JobType = (typeof typeOptions)[number];
+
+const experienceLevelOptions = ['Junior', 'Middle', 'Senior'] as const;
+type ExperienceLevel = (typeof experienceLevelOptions)[number];
+
+const workArrangementOptions = ['On-site', 'Remote', 'Hybrid'] as const;
+type WorkArrangement = (typeof workArrangementOptions)[number];
+
+const industryOptions = [
+  'Accountancy, banking and finance',
+  'Business, consulting and management',
+  'Charity and voluntary work',
+  'Creative arts and design',
+  'Energy and utilities',
+  'Engineering and manufacturing',
+  'Environment and agriculture',
+  'Healthcare',
+  'Hospitality and events management',
+  'Information technology',
+  'Law',
+  'Law enforcement and security',
+  'Leisure, sport and tourism',
+  'Marketing, advertising and PR',
+  'Media and internet',
+  'Property and construction',
+  'Public services and administration',
+  'Recruitment and HR',
+  'Retail',
+  'Sales',
+  'Science and pharmaceuticals',
+  'Social care',
+  'Teacher training and education',
+  'Transport and logistics',
+  'Other',
+] as const;
+type Industry = (typeof industryOptions)[number];
+
+
+
+export type CreateJobData = {
+  title: string;
+  company: string;
+  category: string;
+  location: string;
+  type: JobType;
+  closingDate: string;
+  offeredSalary: string;
+  experienceLevel: ExperienceLevel;
+  experience: string;
+  remoteWorkOption: boolean;
+  expatriateEligibility: boolean;
+  keyResponsibilities: string;
+  hardSkills: string[];
+  softSkills: string[];
+  goalsAndPerformanceMetrics: string;
+  managementStyle: string;
+  careerProgression: string;
+  benefitsAndCulture: string;
+  candidateSelectionCriteria: string;
+  qualifications: string[];
+  workCondition: string;
+  workArrangement: WorkArrangement;
+  industry: Industry;
+};
 
 export interface JobApplication {
     _id: string;
@@ -197,5 +263,25 @@ export interface JobApplication {
     method: string;
     recipient: string;
     read: boolean;
+  }
+  
+
+  export interface CreateCompany {
+    name: string;
+    description?: string;
+    website?: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    phoneNumber: string;
+    email: string;
+    logo?: string;
+    bannerImage?: string;
+    foundedDate?: string;
+    numberOfEmployees?: number;
+    industry: string;
   }
   
