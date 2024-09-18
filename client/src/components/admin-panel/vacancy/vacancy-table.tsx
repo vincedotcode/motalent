@@ -10,54 +10,54 @@ import Loader from '@/components/loader';
 
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogTrigger,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
-import CreateVacancyForm from "@/components/admin-panel/vacancy/create-vacancy";
+import CreateVacancyForm from '@/components/admin-panel/vacancy/create-vacancy';
+
 export default function JobsTable() {
-    const [jobs, setJobs] = useState<Job[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchJobs = async () => {
-            try {
-                const data = await getAllJobs();
-                setJobs(data);
-            } catch (err) {
-                setError((err as Error).message);
-            } finally {
-                setLoading(false);
-            }
-        };
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const data = await getAllJobs();
+        setJobs(data);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        fetchJobs();
-    }, []);
+    fetchJobs();
+  }, []);
 
-    if (loading) return <> <Loader /> </>;
-    if (error) return <p>Error: {error}</p>;
+  if (loading) return <> <Loader /> </>;
+  if (error) return <p>Error: {error}</p>;
 
-    return (
-        <div className="mt-4">
-            <div className='flex justify-end mb-1'>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button variant="default">Add Vacancy</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Create New Vacancy</DialogTitle>
-                        </DialogHeader>
-                        <CreateVacancyForm />
-                    </DialogContent>
-                </Dialog>
-            </div>
-            <DataTable columns={jobColumns} data={jobs} />
-        </div>
-
-    );
+  return (
+    <div className="mt-4">
+      <div className="flex justify-end mb-1">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="default">Add Vacancy</Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-5xl w-full">
+            <DialogHeader>
+              <DialogTitle>Create New Vacancy</DialogTitle>
+            </DialogHeader>
+            <CreateVacancyForm />
+          </DialogContent>
+        </Dialog>
+      </div>
+      <DataTable columns={jobColumns} data={jobs} />
+    </div>
+  );
 }

@@ -120,6 +120,8 @@ type Industry = (typeof industryOptions)[number];
 
 
 
+// types.ts
+
 export type CreateJobData = {
   title: string;
   company: string;
@@ -135,17 +137,16 @@ export type CreateJobData = {
   keyResponsibilities: string;
   hardSkills: string[];
   softSkills: string[];
-  goalsAndPerformanceMetrics: string;
-  managementStyle: string;
-  careerProgression: string;
-  benefitsAndCulture: string;
-  candidateSelectionCriteria: string;
   qualifications: string[];
-  workCondition: string;
+  goalsAndPerformanceMetrics?: string;
+  managementStyle?: string;
+  careerProgression?: string;
+  benefitsAndCulture?: string;
+  candidateSelectionCriteria?: string;
+  workCondition?: string;
   workArrangement: WorkArrangement;
   industry: Industry;
 };
-
 export interface JobApplication {
     _id: string;
     job: Job;

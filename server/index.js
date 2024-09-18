@@ -13,6 +13,7 @@ import userRoutes from './routes/User.js';
 import templateRoutes from './routes/Template.js';
 import resumeRoutes from './routes/Resume.js';
 import applicationRoutes from './routes/Application.js';
+import matchingRoutes from './routes/Matching.js';
 import config from './config/index.js';
 
 const app = express();
@@ -62,7 +63,8 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/templates', templateRoutes);
 app.use('/api/resumes', resumeRoutes);
-app.use('/api/applications', applicationRoutes); 
+app.use('/api/applications', applicationRoutes);
+app.use('/api/matching', matchingRoutes);
 
 
 
