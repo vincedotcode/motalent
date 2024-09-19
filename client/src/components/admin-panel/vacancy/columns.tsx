@@ -1,12 +1,28 @@
-// jobColumns.ts
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Job } from '@/helper/types';
+import { JobActionsDropdown } from '@/components/admin-panel/vacancy/vacancy-actions'; // Import the JobActionsDropdown component
 
-export const jobColumns: ColumnDef<Job>[] = [
+const getStatusVariant = (status: string) => {
+  switch (status) {
+    case 'Active':
+      return 'default'; // Primary color
+    case 'Ending Soon':
+      return 'destructive'; // Red color
+    case 'Closed':
+      return 'outline'; // Gray color
+    case 'Inactive':
+      return 'secondary'; // Secondary color
+    default:
+      return 'outline'; // Fallback color
+  }
+};
+
+// Modify jobColumns to accept refreshVacancies function as argument
+export const jobColumns = (refreshVacancies: () => void): ColumnDef<Job>[] => [
   {
     accessorKey: 'title',
     header: 'Job Title',
@@ -55,11 +71,26 @@ export const jobColumns: ColumnDef<Job>[] = [
   {
     accessorKey: 'status',
     header: 'Status',
-    cell: ({ row }) => <Badge variant="default">{row.original.status}</Badge>,
+    cell: ({ row }) => (
+      <Badge variant={getStatusVariant(row.original.status)}>
+        {row.original.status}
+      </Badge>
+    ),
   },
   {
     accessorKey: 'createdAt',
     header: 'Posted On',
     cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString(),
+  },
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => (
+      <JobActionsDropdown
+        jobId={row.original._id}
+        currentStatus={row.original.status}
+        refreshJobs={refreshVacancies} // Pass the refreshVacancies function to JobActionsDropdown
+      />
+    ),
   },
 ];

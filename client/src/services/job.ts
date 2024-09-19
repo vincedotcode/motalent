@@ -52,7 +52,7 @@ export const createJob = async (jobData: Partial<CreateJobData>): Promise<Create
 
 export const updateJobStatus = async (jobId: string, status: string): Promise<Job> => {
     try {
-        const response = await api.patch<Job>(`/jobs/${jobId}/status`, { status });
+        const response = await api.put<Job>(`/jobs/${jobId}/status`, { status });
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {

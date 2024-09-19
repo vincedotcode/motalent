@@ -111,7 +111,7 @@ const jobSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-        enum: ['Active', 'Ending Soon', 'Closed'],
+        enum: ['Active', 'Ending Soon', 'Closed', 'Inactive'],
         default: 'Active',
     },
     applicants: [{
