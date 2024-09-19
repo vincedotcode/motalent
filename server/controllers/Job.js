@@ -25,7 +25,7 @@ const getAllJobs = async (req, res) => {
 const getJobById = async (req, res) => {
     try {
         const job = await jobService.getJobById(req.params.id);
-        res.json(job);
+        res.json({data: job});
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

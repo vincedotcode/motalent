@@ -89,7 +89,7 @@ export const jobColumns = (refreshVacancies: () => void): ColumnDef<Job>[] => [
       <JobActionsDropdown
         jobId={row.original._id}
         currentStatus={row.original.status}
-        refreshJobs={refreshVacancies} // Pass the refreshVacancies function to JobActionsDropdown
+        refreshJobs={refreshVacancies} 
       />
     ),
   },

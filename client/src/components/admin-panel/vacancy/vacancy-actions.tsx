@@ -55,7 +55,7 @@ export const JobActionsDropdown: React.FC<JobActionsDropdownProps> = ({ jobId, c
 
   const handleViewJob = async () => {
     try {
-      router.push(`/jobs/${jobId}`);
+      router.push(`/admin/vacancies/${jobId}`);
     } catch (error) {
       console.error('Error viewing job:', error);
     }

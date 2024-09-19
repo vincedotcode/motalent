@@ -24,7 +24,7 @@ const getAllCompanies = async () => {
 };
 
 const getCompanyById = async (companyId) => {
-    const company = await Company.findById(companyId).populate('recruiter affiliatedRecruiters jobs ratings.user');
+    const company = await Company.findById(companyId).populate('recruiter affiliatedRecruiters ratings.user');
     if (!company) {
         throw new Error('Company not found');
     }
