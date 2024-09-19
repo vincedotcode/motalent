@@ -14,13 +14,16 @@ import {
 import CountWidget from "@/components/admin-panel/dashboard/count-widget";
 import { getAllUsers } from "@/services/user";
 import { getAllCompanies } from "@/services/company";
-import { UserPlus, BriefcaseBusiness } from "lucide-react";
+import { getAllJobs } from "@/services/job";
+import { UserPlus, BriefcaseBusiness, Briefcase } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Loader from "@/components/loader";
+import { set } from "date-fns";
 
 export default function DashboardPage() {
   const [userCount, setUserCount] = useState<number>(0);
   const [companyCount, setCompanyCount] = useState<number>(0);
+  const [jobCount, setJobCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,9 +32,11 @@ export default function DashboardPage() {
       try {
         const users = await getAllUsers();
         const companies = await getAllCompanies();
+        const jobs = await getAllJobs();
 
         setUserCount(users.length);
         setCompanyCount(companies.length);
+        setJobCount(jobs.length);
       } catch (err) {
         setError("Failed to load data");
       } finally {
@@ -76,6 +81,12 @@ export default function DashboardPage() {
             amount={companyCount}
             percentage="Companies"
             icon={<BriefcaseBusiness className="h-6 w-6 text-primary-foreground" />}
+          />
+
+          <CountWidget
+            amount={jobCount}
+            percentage="Vacancies"
+            icon={<Briefcase className="h-6 w-6 text-primary-foreground" />}
           />
         </div>
       </CardContent>

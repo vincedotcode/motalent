@@ -13,9 +13,10 @@ interface JobApplicationProps {
     isOpen: boolean;
     onClose: () => void;
     jobId: string;
+    jobName: string;
 }
 
-const JobApplication: React.FC<JobApplicationProps> = ({ jobId, isOpen, onClose }) => {
+const JobApplication: React.FC<JobApplicationProps> = ({ jobId, jobName, isOpen, onClose }) => {
     const [resumes, setResumes] = useState<Resume[]>([]);
     const [selectedResume, setSelectedResume] = useState<string | undefined>(undefined);
     const [description, setDescription] = useState<string>('');
@@ -74,7 +75,7 @@ const JobApplication: React.FC<JobApplicationProps> = ({ jobId, isOpen, onClose 
             <Dialog open={isOpen} onOpenChange={onClose}>
                 <DialogContent className="sm:max-w-[480px]">
                     <DialogHeader>
-                        <DialogTitle>You are applying for the Senior Software Engineer role</DialogTitle>
+                        <DialogTitle>You are applying for the {jobName} role</DialogTitle>
                         <DialogDescription>Please select the resume you would like to use for this application.</DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">

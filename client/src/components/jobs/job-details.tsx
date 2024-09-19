@@ -7,6 +7,9 @@ import { BriefcaseBusiness } from "lucide-react";
 import JobApplication from '@/components/jobs/job-application';
 import { getUserData } from '@/hooks/useAuth';
 import AlertModal from '@/components/shared/alert';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useRouter } from 'next/navigation';
+import { getResumesByUserId, Resume } from '@/services/resume';
 
 interface JobDetailsProps {
   job: Job | null;
@@ -17,6 +20,10 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job }) => {
   const user = getUserData();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [hasApplied, setHasApplied] = useState(false);
+  const router = useRouter();
+  const [resumes, setResumes] = useState<Resume[]>([]);
+
+  const [resumeAlertOpen, setResumeAlertOpen] = useState(false); // Resume alert state
   const [alertProps, setAlertProps] = useState<{
     title: string;
     message: string;
@@ -26,6 +33,23 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job }) => {
     message: '',
     type: 'success',
   });
+
+
+  const fetchResumes = async () => {
+    if (user) {
+      try {
+        const fetchedResumes = await getResumesByUserId(user._id);
+        setResumes(fetchedResumes);
+      
+      } catch (error) {
+        console.error('Error fetching resumes:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchResumes();
+  }, []);
 
   useEffect(() => {
     if (user && job) {
@@ -41,13 +65,20 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job }) => {
         type: 'error',
       });
       setIsAlertOpen(true);
-    } else {
+    } else if (resumes.length === 0) {
+      setResumeAlertOpen(true);
+    }
+    else {
       setIsModalOpen(true);
     }
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleResumeAlertClose = () => {
+    setResumeAlertOpen(false);
   };
 
   if (!job) {
@@ -163,7 +194,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job }) => {
         <p><strong>Employees:</strong> {job.company.numberOfEmployees}</p>
         <p><strong>Average Rating:</strong> {job.company.averageRating}</p>
       </div>
-      <JobApplication isOpen={isModalOpen} onClose={handleCloseModal} jobId={job._id} />
+      <JobApplication isOpen={isModalOpen} onClose={handleCloseModal} jobId={job._id} jobName={job.title} />
       <AlertModal
         isOpen={isAlertOpen}
         onClose={() => setIsAlertOpen(false)}
@@ -171,6 +202,21 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job }) => {
         message={alertProps.message}
         type={alertProps.type}
       />
+
+       {/* Dialog for no resume */}
+       <Dialog open={resumeAlertOpen} onOpenChange={handleResumeAlertClose}>
+          <DialogContent className="sm:max-w-[425px] bg-background text-foreground">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-semibold">No Resume Found</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+            <p>You need to have a resume in order to apply for this job. A resume helps us understand your skills and experience to match you with job opportunities.</p>
+              <Button onClick={() => router.push('/profile/resume')} className="mt-4 bg-primary text-primary-foreground">
+                Create Resume
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
     </div>
   );
 };

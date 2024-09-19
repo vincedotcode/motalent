@@ -2,16 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Briefcase, FileText } from 'lucide-react';
 import { getResumesByUserId, Resume } from '@/services/resume';
 import { getUserData } from '@/hooks/useAuth';
 import { createMatch } from '@/services/matching';
 import { useRouter } from 'next/navigation';
 import confetti from 'canvas-confetti';
+import AlertModal from '@/components/shared/alert'; // Importing AlertModal for showing alerts
 
 interface MatchResult {
   matchedJob?: { id: string; title: string };
@@ -24,16 +24,30 @@ export default function JobMatchingSection() {
   const [selectedResume, setSelectedResume] = useState<string | undefined>(undefined);
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isResultDialogOpen, setIsResultDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false); // Alert state
+  const [resumeAlertOpen, setResumeAlertOpen] = useState(false); // Resume alert state
   const router = useRouter();
 
+  const [alertProps, setAlertProps] = useState<{
+    title: string;
+    message: string;
+    type: 'success' | 'error';
+  }>({
+    title: '',
+    message: '',
+    type: 'success',
+  });
+
+  const user = getUserData(); // Fetch user data
+
   const fetchResumes = async () => {
-    const user = getUserData();
     if (user) {
       try {
         const fetchedResumes = await getResumesByUserId(user._id);
         setResumes(fetchedResumes);
+      
       } catch (error) {
         console.error('Error fetching resumes:', error);
       }
@@ -45,11 +59,22 @@ export default function JobMatchingSection() {
   }, []);
 
   const handleFindMatch = () => {
-    setIsDialogOpen(true);
+    if (!user) {
+      setAlertProps({
+        title: 'Not Logged In',
+        message: 'You must be logged in to perform this action.',
+        type: 'error',
+      });
+      setIsAlertOpen(true);
+    } else if (resumes.length === 0) {
+      setResumeAlertOpen(true);
+    } else {
+      setIsDialogOpen(true);
+    }
   };
 
   const triggerConfetti = () => {
-    const end = Date.now() + 3 * 1000; // 3 seconds
+    const end = Date.now() + 3 * 1000;
     const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
     const frame = () => {
       if (Date.now() > end) return;
@@ -81,15 +106,9 @@ export default function JobMatchingSection() {
     if (!selectedResume) return;
     setLoading(true);
     try {
-      const user = getUserData();
-      const matchData = {
-        resumeId: selectedResume,
-      };
+      const matchData = { resumeId: selectedResume };
       const match = await createMatch(matchData);
 
-      console.log('Match response:', match); // Debugging
-
-      // Check if there are matched jobs
       if (match.matchedJobs && match.matchedJobs.length > 0) {
         const firstMatch = match.matchedJobs[0].match;
         setMatchResult({
@@ -97,17 +116,16 @@ export default function JobMatchingSection() {
           score: firstMatch.matchScore,
           explanation: firstMatch.explanation,
         });
-        triggerConfetti(); // Trigger confetti on match
+        triggerConfetti();
       } else {
-        // Handle the case where there are no matched jobs
         setMatchResult({
           score: null,
-          explanation: match.explanation, // Use the explanation from the API response
+          explanation: match.explanation,
         });
       }
 
       setIsDialogOpen(false);
-      setIsAlertOpen(true);
+      setIsResultDialogOpen(true);
     } catch (error) {
       console.error('Error creating match:', error);
     } finally {
@@ -116,7 +134,21 @@ export default function JobMatchingSection() {
   };
 
   const handleViewMatches = () => {
+    setIsResultDialogOpen(false);
     router.push('/profile/matches');
+  };
+
+  const handleResultDialogClose = () => {
+    setIsResultDialogOpen(false);
+    setMatchResult(null);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+  };
+
+  const handleResumeAlertClose = () => {
+    setResumeAlertOpen(false);
   };
 
   return (
@@ -137,7 +169,7 @@ export default function JobMatchingSection() {
           </Button>
         </div>
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
           <DialogContent className="sm:max-w-[425px] bg-background text-foreground">
             <DialogHeader>
               <DialogTitle className="text-2xl font-semibold">Find Your Job Match</DialogTitle>
@@ -177,34 +209,58 @@ export default function JobMatchingSection() {
           </DialogContent>
         </Dialog>
 
-        <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-          <AlertDialogContent className="bg-background text-foreground">
-            <AlertDialogHeader>
-              <AlertDialogTitle className="text-2xl font-semibold">
+        <Dialog open={isResultDialogOpen} onOpenChange={handleResultDialogClose}>
+          <DialogContent className="sm:max-w-[425px] bg-background text-foreground">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-semibold">
                 {matchResult?.matchedJob ? 'We Found a Match for You!' : 'No Match Found'}
-              </AlertDialogTitle>
-              <AlertDialogDescription className="text-gray-700 dark:text-gray-300">
-                {matchResult?.matchedJob ? (
-                  <div className="mb-4">
-                    <strong>Matched Job:</strong> {matchResult.matchedJob.title}
-                    <br />
-                    <strong>Match Score:</strong> {matchResult.score}%
-                    <br />
-                    <strong>Explanation:</strong> {matchResult.explanation}
-                    <br />
-                    <Button onClick={handleViewMatches} className="mt-4 bg-primary text-primary-foreground">
-                      View Matches
-                    </Button>
-                  </div>
-                ) : (
-                  <div>
-                    <strong>Explanation:</strong> {matchResult?.explanation}
-                  </div>
-                )}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-          </AlertDialogContent>
-        </AlertDialog>
+              </DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              {matchResult?.matchedJob ? (
+                <div className="mb-4">
+                  <strong>Matched Job:</strong> {matchResult.matchedJob.title}
+                  <br />
+                  <strong>Match Score:</strong> {matchResult.score}%
+                  <br />
+                  <strong>Explanation:</strong> {matchResult.explanation}
+                  <br />
+                  <Button onClick={handleViewMatches} className="mt-4 bg-primary text-primary-foreground">
+                    View Matches
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <strong>Explanation:</strong> {matchResult?.explanation}
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Alert for user not logged in */}
+        <AlertModal
+          isOpen={isAlertOpen}
+          onClose={() => setIsAlertOpen(false)}
+          title={alertProps.title}
+          message={alertProps.message}
+          type={alertProps.type}
+        />
+
+        {/* Dialog for no resume */}
+        <Dialog open={resumeAlertOpen} onOpenChange={handleResumeAlertClose}>
+          <DialogContent className="sm:max-w-[425px] bg-background text-foreground">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-semibold">No Resume Found</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <p>You need to have a resume in order to find job matches. A resume helps us understand your skills and experience to provide better job recommendations.</p>
+              <Button onClick={() => router.push('/profile/resume')} className="mt-4 bg-primary text-primary-foreground">
+                Create Resume
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );
