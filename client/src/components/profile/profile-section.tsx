@@ -35,7 +35,7 @@ export const projects = [
   {
     title: "Matches",
     description: "See job matches that align with your skills and career interests.",
-    link: "/matches",
+    link: "/profile/matches",
     icon: Users,
   },
 ];

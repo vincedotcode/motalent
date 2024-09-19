@@ -23,7 +23,7 @@ const matchJobsForUser = async (req, res) => {
             explanation,
         };
 
-        res.status(201).json(response);
+        res.status(201).json({data: response});
     } catch (error) {
         console.error('Error in matchJobsForUser:', error);
         res.status(400).json({ message: error.message });
@@ -40,8 +40,8 @@ const getMatchesByUserId = async (req, res) => {
             .populate('jobId') // Ensure 'jobId' field is correctly referenced in Match schema
             .populate('resumeId'); // Ensure 'resumeId' field is correctly referenced in Match schema
 
-        res.json(matches);
-    } catch (error) {
+            res.status(201).json({data: matches});
+        } catch (error) {
         console.error('Error in getMatchesByUserId:', error);
         res.status(400).json({ message: error.message });
     }

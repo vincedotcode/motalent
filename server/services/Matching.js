@@ -1,5 +1,3 @@
-// matchingService.js
-
 import openai from '../config/openai.js';
 import Resume from '../models/Resume.js';
 import Job from '../models/Job.js';
@@ -83,23 +81,10 @@ const generateMatchScore = async (resume, jobs) => {
                 // Validate the parsed response structure using Joi
                 const { error, value } = responseSchema.validate(parsedResponse);
                 if (!error) {
-                    // Additional custom validation for 'matchedJob' when score is present
-                    if (
-                        value.score !== null &&
-                        value.matchedJob &&
-                        value.matchedJob.id &&
-                        value.matchedJob.title
-                    ) {
-                        return value;
-                    } else if (value.score === null && value.explanation) {
-                        return value;
-                    } else {
-                        console.warn(`Parsed response structure is incorrect: ${aiText}`);
-                    }
+                    return value;
                 } else {
                     console.warn(`Validation failed for AI response: ${error.message}`);
                 }
-
             } catch (parseError) {
                 console.warn(`Failed to parse AI response as JSON: ${aiText}`);
             }
@@ -161,6 +146,7 @@ const filterAndMatchJobs = async (userId, resumeId) => {
                 resumeId,
                 jobId: matchResult.matchedJob.id,
                 matchScore: matchResult.score,
+                explanation: matchResult.explanation,  // Save the AI explanation
             });
 
             await match.save();

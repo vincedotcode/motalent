@@ -286,3 +286,40 @@ export interface JobApplication {
     industry: string;
   }
   
+// CreateMatchData: used to send data to create a match
+export interface CreateMatchData {
+  userId: string;
+  resumeId: string;
+}
+
+// Match type: represents the result of a single match
+export interface Match {
+  matchScore: number;
+  explanation: string;
+  matchedJob?: Job;
+}
+
+// MatchDetail type: detailed information about the match
+export interface MatchDetail {
+  userId: string;
+  resumeId: string;
+  jobId: string;
+  matchScore: number;
+  explanation: string;
+  _id: string;
+  createdAt: string;
+}
+
+// MatchedJob: structure for job match details
+export interface MatchedJob {
+  match: MatchDetail;
+  explanation: string;
+  job: Job;
+}
+
+// MatchResponse: represents the response for a createMatch request
+export interface MatchResponse {
+  message: string;
+  matchedJobs: MatchedJob[]; // List of matched jobs (can be empty if no matches)
+  explanation: string; // Explanation for no matches
+}
