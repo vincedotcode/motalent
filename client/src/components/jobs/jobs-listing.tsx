@@ -16,7 +16,8 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import useMediaQuery from '@/hooks/use-media-query'; 
+import useMediaQuery from '@/hooks/use-media-query';
+import NoResult from "@/components/shared/no-result"; // Import NoResult
 
 const JobListing: React.FC = () => {
     const [jobs, setJobs] = useState<Job[]>([]);
@@ -72,81 +73,87 @@ const JobListing: React.FC = () => {
 
     return (
         <div className="flex flex-col items-center justify-center p-6">
-            <div className="flex flex-col md:flex-row items-start justify-center w-full max-w-5xl space-y-6 md:space-y-0 md:space-x-6">
-                <div className="flex flex-col space-y-6 md:w-1/2 p-4">
-                    {currentJobs.map((job) => (
-                        <JobCard
-                            key={job._id}
-                            job={job}
-                            onSelect={handleSelectJob}
-                            isSelected={selectedJob ? selectedJob._id === job._id : false}
-                        />
-                    ))}
-                    <div>
-                        <Pagination>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious
-                                        href="#"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            if (currentPage > 1) {
-                                                paginate(currentPage - 1);
-                                            }
-                                        }}
-                                        className={currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}
-                                    />
-                                </PaginationItem>
-                                {[...Array(totalPages)].map((_, index) => (
-                                    <PaginationItem key={index}>
-                                        <PaginationLink
+            {jobs.length === 0 ? (
+
+
+                <NoResult title="No Jobs Available" description="It looks like there are no jobs currently available. Check back later!" />
+            ) : (
+                <div className="flex flex-col md:flex-row items-start justify-center w-full max-w-5xl space-y-6 md:space-y-0 md:space-x-6">
+                    <div className="flex flex-col space-y-6 md:w-1/2 p-4">
+                        {currentJobs.map((job) => (
+                            <JobCard
+                                key={job._id}
+                                job={job}
+                                onSelect={handleSelectJob}
+                                isSelected={selectedJob ? selectedJob._id === job._id : false}
+                            />
+                        ))}
+                        <div>
+                            <Pagination>
+                                <PaginationContent>
+                                    <PaginationItem>
+                                        <PaginationPrevious
                                             href="#"
                                             onClick={(e) => {
                                                 e.preventDefault();
-                                                paginate(index + 1);
+                                                if (currentPage > 1) {
+                                                    paginate(currentPage - 1);
+                                                }
                                             }}
-                                            isActive={index + 1 === currentPage}
-                                        >
-                                            {index + 1}
-                                        </PaginationLink>
+                                            className={currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}
+                                        />
                                     </PaginationItem>
-                                ))}
-                                {totalPages > 3 && currentPage < totalPages && (
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <PaginationItem key={index}>
+                                            <PaginationLink
+                                                href="#"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    paginate(index + 1);
+                                                }}
+                                                isActive={index + 1 === currentPage}
+                                            >
+                                                {index + 1}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    ))}
+                                    {totalPages > 3 && currentPage < totalPages && (
+                                        <PaginationItem>
+                                            <PaginationEllipsis />
+                                        </PaginationItem>
+                                    )}
                                     <PaginationItem>
-                                        <PaginationEllipsis />
+                                        <PaginationNext
+                                            href="#"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if (currentPage < totalPages) {
+                                                    paginate(currentPage + 1);
+                                                }
+                                            }}
+                                            className={currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}
+                                        />
                                     </PaginationItem>
-                                )}
-                                <PaginationItem>
-                                    <PaginationNext
-                                        href="#"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            if (currentPage < totalPages) {
-                                                paginate(currentPage + 1);
-                                            }
-                                        }}
-                                        className={currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}
-                                    />
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
+                                </PaginationContent>
+                            </Pagination>
+                        </div>
                     </div>
+                    <div className="hidden md:flex flex-1 p-4">
+                        <div className="overflow-y-auto w-full h-full">
+                            <JobDetails job={selectedJob} />
+                        </div>
+                    </div>
+                    {isMobile && (
+                        <div className="md:hidden w-full">
+                            <JobDetailsDialog
+                                job={selectedJob}
+                                open={dialogOpen}
+                                onOpenChange={setDialogOpen}
+                            />
+                        </div>
+                    )}
                 </div>
-                <div className="hidden md:flex flex-1 p-4">
-                    <div className="overflow-y-auto w-full h-full">
-                        <JobDetails job={selectedJob} />
-                    </div>
-                </div>
-                {isMobile && (
-                    <div className="md:hidden w-full">
-                        <JobDetailsDialog 
-                            job={selectedJob} 
-                            open={dialogOpen} 
-                            onOpenChange={setDialogOpen} 
-                        />
-                    </div>
-                )}
-            </div>
+            )}
         </div>
     );
 };

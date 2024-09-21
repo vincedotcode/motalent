@@ -111,12 +111,19 @@ const jobSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-        enum: ['Active', 'Ending Soon', 'Closed', 'Inactive'],
+        enum: ['Active', 'Ending Soon', 'Closed', "Inactive"],
         default: 'Active',
     },
     applicants: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+    }],
+
+    applicants: [{
+        applicant: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        applicationId: { type: mongoose.Schema.Types.ObjectId, ref: 'JobApplication' },
+        appliedAt: { type: Date, default: Date.now },
+        applicantName: { type: String, required: true },  
     }],
     industry: {
         type: String,

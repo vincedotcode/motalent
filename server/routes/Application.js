@@ -47,7 +47,6 @@ const router = express.Router();
  */
 router.post('/', authenticateToken, applicationController.createJobApplication);
 
-
 /**
  * @swagger
  * /api/applications/user:
@@ -85,7 +84,6 @@ router.get('/user', authenticateToken, applicationController.getApplicationsByUs
  *         description: Error message
  */
 router.get('/:applicationId', authenticateToken, applicationController.getApplicationById);
-
 
 /**
  * @swagger
@@ -132,13 +130,12 @@ router.get('/job/:jobId', authenticateToken, applicationController.getApplicatio
  *             properties:
  *               newStatus:
  *                 type: string
+ *                 description: The new status of the application
  *               comments:
  *                 type: string
- *               changedBy:
- *                 type: string
+ *                 description: Optional comments for the status update
  *             required:
  *               - newStatus
- *               - changedBy
  *     responses:
  *       200:
  *         description: Application status updated successfully
@@ -170,6 +167,7 @@ router.put('/:applicationId/status', authenticateToken, applicationController.up
  *             properties:
  *               reviewerId:
  *                 type: string
+ *                 description: The ID of the reviewer to assign
  *             required:
  *               - reviewerId
  *     responses:
@@ -204,18 +202,21 @@ router.put('/:applicationId/reviewer', authenticateToken, applicationController.
  *               interviewDetails:
  *                 type: object
  *                 properties:
- *                   date:
+ *                   interviewDate:
  *                     type: string
- *                   time:
+ *                   interviewTime:
  *                     type: string
- *                   location:
+ *                   interviewLocation:
  *                     type: string
- *                   notes:
+ *                   interviewers:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   feedback:
  *                     type: string
  *             required:
- *               - date
- *               - time
- *               - location
+ *               - interviewDate
+ *               - interviewTime
  *     responses:
  *       200:
  *         description: Interview added successfully
@@ -248,13 +249,15 @@ router.put('/:applicationId/interview', authenticateToken, applicationController
  *               assessmentResult:
  *                 type: object
  *                 properties:
+ *                   testName:
+ *                     type: string
  *                   score:
  *                     type: number
- *                   feedback:
+ *                   comments:
  *                     type: string
  *             required:
+ *               - testName
  *               - score
- *               - feedback
  *     responses:
  *       200:
  *         description: Assessment result added successfully

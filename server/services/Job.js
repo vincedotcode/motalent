@@ -34,7 +34,7 @@ const applyForJob = async (jobId, userId) => {
 };
 
 const getJobsByCompanyId = async (companyId) => {
-    return Job.find({ company: companyId }).populate('company applicants');
+    return Job.find({ company: companyId }).populate('company applicants application');
 };
 
 const updateJobStatus = async (jobId, status) => {

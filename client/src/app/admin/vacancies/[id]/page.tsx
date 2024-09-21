@@ -15,6 +15,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link"
 import { ModeToggle } from "@/helper/darkmode"
 import { ChevronLeft } from "lucide-react"
+import ApplicationModal from "@/components/admin-panel/vacancy/application-admin-modal"
+
 
 const funnelData = [
     { name: 'Total Applicants', value: 45 },
@@ -231,8 +233,7 @@ export default function AdminVacancyView() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Name</TableHead>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Phone</TableHead>
+                                       
                                         <TableHead>Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
@@ -242,16 +243,15 @@ export default function AdminVacancyView() {
                                             <TableCell>
                                                 <div className="flex items-center space-x-2">
                                                     <Avatar>
-                                                        <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${applicant.firstName} ${applicant.lastName}`} />
-                                                        <AvatarFallback>{applicant.firstName[0]}{applicant.lastName[0]}</AvatarFallback>
+                                                        <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${applicant.applicantName}`} />
+                                                        <AvatarFallback>{applicant.applicantName[0]}</AvatarFallback>
                                                     </Avatar>
-                                                    <span>{applicant.firstName} {applicant.lastName}</span>
+                                                    <span>{applicant.applicantName}</span>
                                                 </div>
                                             </TableCell>
-                                            <TableCell>{applicant.email}</TableCell>
-                                            <TableCell>{applicant.phoneNumber}</TableCell>
+                                            
                                             <TableCell>
-                                                <Button variant="outline" size="sm">View</Button>
+                                                <ApplicationModal applicationId={applicant.applicationId}  />
                                             </TableCell>
                                         </TableRow>
                                     ))}

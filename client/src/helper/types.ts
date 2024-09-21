@@ -46,38 +46,47 @@ export interface Company {
 }
 
 export interface Job {
-    _id: string;
-    title: string;
-    company: Company;
-    category: string;
-    location: string;
-    type: 'Full-time' | 'Part-time' | 'Contract' | 'Temporary' | 'Internship';
-    closingDate: string;
-    offeredSalary: string;
-    experienceLevel: 'Junior' | 'Middle' | 'Senior';
-    experience: string;
-    remoteWorkOption: boolean;
-    expatriateEligibility: boolean;
-    keyResponsibilities: string;
-    hardSkills: string[];
-    softSkills: string[];
-    qualifications: string[];
-    goalsAndPerformanceMetrics: string;
-    managementStyle: string;
-    careerProgression: string;
-    benefitsAndCulture: string;
-    candidateSelectionCriteria: string;
-    workCondition: string;
-    workArrangement: 'On-site' | 'Remote' | 'Hybrid';
-    industry: string;
-    views: number;
-    applicationCount: number;
-    status: 'Active' | 'Ending Soon' | 'Closed';
-    applicants: User[];
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
+  _id: string;
+  title: string;
+  company: Company;
+  category: string;
+  location: string;
+  type: 'Full-time' | 'Part-time' | 'Contract' | 'Temporary' | 'Internship';
+  closingDate: string;
+  offeredSalary: string;
+  experienceLevel: 'Junior' | 'Middle' | 'Senior';
+  experience: string;
+  remoteWorkOption: boolean;
+  expatriateEligibility: boolean;
+  keyResponsibilities: string;
+  hardSkills: string[];
+  softSkills: string[];
+  qualifications: string[];
+  goalsAndPerformanceMetrics: string;
+  managementStyle: string;
+  careerProgression: string;
+  benefitsAndCulture: string;
+  candidateSelectionCriteria: string;
+  workCondition: string;
+  workArrangement: 'On-site' | 'Remote' | 'Hybrid';
+  industry: string;
+  views: number;
+  applicationCount: number;
+  status: 'Active' | 'Ending Soon' | 'Closed';
+  applicants: Applicant[];  // Update to use a new interface for applicants
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
+
+export interface Applicant {
+  applicant: User;          // Reference to the user who applied
+  applicationId: string;    // ID of the application
+  appliedAt: string;        // Date the user applied
+  applicantName: string;    // Name of the applicant
+  _id: string;              // ID of the applicantß
+}
+
 
 // Define types for enumerations
 const typeOptions = ['Full-time', 'Part-time', 'Contract', 'Temporary', 'Internship'] as const;
@@ -147,26 +156,8 @@ export type CreateJobData = {
   workArrangement: WorkArrangement;
   industry: Industry;
 };
-export interface JobApplication {
-    _id: string;
-    job: Job;
-    applicant: User;
-    resume: Resume;
-    coverLetter: string;
-    currentStatus: string;
-    scoring: number;
-    additionalDocuments: Document[];
-    statusHistory: StatusHistory[];
-    assessments: Assessment[];
-    interviews: Interview[];
-    notifications: Notification[];
-    submittedAt: string;
-    updatedAt: string;
-    createdAt: string;
-    __v: number;
-  }
-  
 
+  
   export interface Resume {
     personalInfo: PersonalInfo;
     _id: string;
@@ -228,43 +219,67 @@ export interface JobApplication {
     _id: string;
   }
   
-  export interface Document {
-    name: string;
-    url: string;
-    uploadedAt: string;
-  }
-  
-  export interface StatusHistory {
-    status: string;
-    changedAt: string;
-    comments?: string;
-    changedBy: string;
-  }
-  
-  export interface Assessment {
-    testName: string;
-    score: number;
-    takenAt: string;
-    comments?: string;
-  }
-  
-  export interface Interview {
-    interviewDate: string;
-    interviewTime: string;
-    interviewLocation?: string;
-    interviewLink?: string;
-    interviewers: string[];
-    feedback?: string;
-    interviewResult: string;
-  }
-  
-  export interface Notification {
-    message: string;
-    sentAt: string;
-    method: string;
-    recipient: string;
-    read: boolean;
-  }
+ // Assessment type
+export interface Assessment {
+  testName: string;
+  score: number;
+  takenAt: string;
+  comments?: string;
+}
+
+// Status history with embedded assessment
+export interface StatusHistory {
+  status: string;
+  changedAt: string;
+  comments?: string;
+  changedBy: string;
+  assessment?: Assessment; // Assessment is embedded in the status history
+}
+
+// Interview type
+export interface Interview {
+  interviewDate: string;
+  interviewTime: string;
+  interviewLocation?: string;
+  interviewLink?: string;
+  interviewers: string[];
+  feedback?: string;
+  interviewResult: 'Passed' | 'Failed' | 'Pending';
+}
+
+// Notification type
+export interface Notification {
+  message: string;
+  sentAt: string;
+  method: 'Email' | 'In-App';
+  recipient: string;
+  read: boolean;
+}
+
+// Document type
+export interface Document {
+  name: string;
+  url: string;
+  uploadedAt: string;
+}
+
+// Job application type
+export interface JobApplication {
+  _id: string;
+  job: Job;
+  applicant: User[];
+  resume: Resume;
+  coverLetter: string;
+  currentStatus: string;
+  scoring: number;
+  additionalDocuments: Document[];
+  statusHistory: StatusHistory[]; // Status history with embedded assessments
+  interviews: Interview[];
+  notifications: Notification[];
+  submittedAt: string;
+  updatedAt: string;
+  createdAt: string;
+}
   
 
   export interface CreateCompany {

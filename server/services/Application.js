@@ -1,13 +1,20 @@
 import JobApplication from '../models/Application.js';
 import Job from '../models/Job.js';
+import User from '../models/User.js';  // Import the User model
 
-
+// Create a new job application
 const createJobApplication = async (userId, jobId, resumeId, comments) => {
     // Check if the user has already applied for this job
     const existingApplication = await JobApplication.findOne({ applicant: userId, job: jobId });
     
     if (existingApplication) {
         throw new Error('You have already applied for this job.');
+    }
+
+    // Fetch user details to get the applicant's name
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new Error('User not found');
     }
 
     // Create a new job application
@@ -21,35 +28,54 @@ const createJobApplication = async (userId, jobId, resumeId, comments) => {
     // Save the application
     await application.save();
 
+    // Update the job's application count and add application details
     const job = await Job.findById(jobId);
     if (!job) {
         throw new Error('Job not found');
     }
 
-    job.applicants.push(userId);
+    // Add application details to the job, including applicant's name
+    job.applicants.push({
+        applicant: userId,
+        applicationId: application._id,
+        appliedAt: application.createdAt,
+        applicantName: `${user.firstName} ${user.lastName}`,  // Add the applicant's name here
+    });
+    
     await job.incrementApplicationCount();
 
     return application;
 };
 
 
-const getApplicationsByUserId = async (userId) => {
-    return JobApplication.find({ applicant: userId }).populate('job resume');
-};
-
-const getApplicationsByJobId = async (jobId) => {
-    return JobApplication.find({ job: jobId }).populate('applicant resume');
-};
-
+// Update the status of the job application
 const updateApplicationStatus = async (applicationId, newStatus, comments, changedBy) => {
+
+   
     const application = await JobApplication.findById(applicationId);
     if (!application) {
         throw new Error('Application not found');
     }
+
+    console.log('application', changedBy);
+    // Update status and keep status history
     await application.updateStatus(newStatus, comments, changedBy);
     return application;
 };
 
+// Add or override an assessment for the current active status
+const addAssessmentToCurrentStatus = async (applicationId, assessmentResult) => {
+    const application = await JobApplication.findById(applicationId);
+    if (!application) {
+        throw new Error('Application not found');
+    }
+
+    // Add or override assessment for the current active status
+    await application.addAssessmentToActiveStatus(assessmentResult);
+    return application;
+};
+
+// Assign a reviewer to the application
 const assignReviewerToApplication = async (applicationId, reviewerId) => {
     const application = await JobApplication.findById(applicationId);
     if (!application) {
@@ -59,6 +85,7 @@ const assignReviewerToApplication = async (applicationId, reviewerId) => {
     return application;
 };
 
+// Add an interview to the application
 const addInterviewToApplication = async (applicationId, interviewDetails) => {
     const application = await JobApplication.findById(applicationId);
     if (!application) {
@@ -68,39 +95,36 @@ const addInterviewToApplication = async (applicationId, interviewDetails) => {
     return application;
 };
 
-const addAssessmentToApplication = async (applicationId, assessmentResult) => {
-    const application = await JobApplication.findById(applicationId);
-    if (!application) {
-        throw new Error('Application not found');
-    }
-    await application.addAssessment(assessmentResult);
-    return application;
+// Get applications by user
+const getApplicationsByUserId = async (userId) => {
+    return JobApplication.find({ applicant: userId }).populate('job resume');
 };
 
+// Get applications by job
+const getApplicationsByJobId = async (jobId) => {
+    return JobApplication.find({ job: jobId }).populate('applicant resume');
+};
+
+// Get a single application by its ID
 const getApplicationById = async (applicationId) => {
-    // Find the job application by its ID and populate related fields
     const application = await JobApplication.findById(applicationId)
         .populate('applicant')
         .populate('job')
         .populate('resume');
 
-    // If no application is found, throw an error
     if (!application) {
         throw new Error('Application not found');
     }
-
-    // Return the found application
     return application;
 };
 
-
 export default {
     createJobApplication,
-    getApplicationsByUserId,
-    getApplicationsByJobId,
     updateApplicationStatus,
+    addAssessmentToCurrentStatus,
     assignReviewerToApplication,
     addInterviewToApplication,
-    addAssessmentToApplication,
+    getApplicationsByUserId,
+    getApplicationsByJobId,
     getApplicationById,
 };

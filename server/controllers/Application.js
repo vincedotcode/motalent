@@ -1,5 +1,6 @@
 import applicationService from '../services/Application.js';
 
+// Create a new job application
 const createJobApplication = async (req, res) => {
     try {
         const { jobId, resumeId, comments } = req.body;
@@ -10,6 +11,7 @@ const createJobApplication = async (req, res) => {
     }
 };
 
+// Get applications by user ID (from the token)
 const getApplicationsByUserId = async (req, res) => {
     try {
         const applications = await applicationService.getApplicationsByUserId(req.user.id);
@@ -19,6 +21,7 @@ const getApplicationsByUserId = async (req, res) => {
     }
 };
 
+// Get applications by job ID
 const getApplicationsByJobId = async (req, res) => {
     try {
         const applications = await applicationService.getApplicationsByJobId(req.params.jobId);
@@ -28,16 +31,23 @@ const getApplicationsByJobId = async (req, res) => {
     }
 };
 
+// Update the status of a job application
 const updateApplicationStatus = async (req, res) => {
     try {
-        const { applicationId, newStatus, comments, changedBy } = req.body;
-        const application = await applicationService.updateApplicationStatus(applicationId, newStatus, comments, changedBy);
+
+        const applicationId = req.params.applicationId;
+
+        const {  newStatus, comments } = req.body;
+        const changedBy = req.user.id;
+        
+        const application = await applicationService.updateApplicationStatus(applicationId, newStatus, comments, req.user.id);
         res.json(application);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
 
+// Assign a reviewer to a job application
 const assignReviewerToApplication = async (req, res) => {
     try {
         const { applicationId, reviewerId } = req.body;
@@ -48,9 +58,13 @@ const assignReviewerToApplication = async (req, res) => {
     }
 };
 
+// Add an interview to a job application
 const addInterviewToApplication = async (req, res) => {
     try {
-        const { applicationId, interviewDetails } = req.body;
+        const appplicationid = req.params.applicationId;
+
+        const {  interviewDetails } = req.body;
+
         const application = await applicationService.addInterviewToApplication(applicationId, interviewDetails);
         res.json(application);
     } catch (error) {
@@ -58,16 +72,20 @@ const addInterviewToApplication = async (req, res) => {
     }
 };
 
+// Add an assessment to a job application
 const addAssessmentToApplication = async (req, res) => {
     try {
-        const { applicationId, assessmentResult } = req.body;
-        const application = await applicationService.addAssessmentToApplication(applicationId, assessmentResult);
+
+        const appplicationid = req.params.applicationId;
+        const {  assessmentResult } = req.body;
+        const application = await applicationService.addAssessmentToCurrentStatus(appplicationid, assessmentResult);
         res.json(application);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
 
+// Get a specific job application by its ID
 const getApplicationById = async (req, res) => {
     try {
         const application = await applicationService.getApplicationById(req.params.applicationId);
@@ -76,8 +94,6 @@ const getApplicationById = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
-
-
 
 export default {
     createJobApplication,
