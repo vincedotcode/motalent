@@ -157,7 +157,32 @@ export type CreateJobData = {
   industry: Industry;
 };
 
-  
+export interface Interview {
+  _id: string;                  // MongoDB document ID
+  applicantId: string;          // ID of the applicant
+  applicationName: string;      // Name of the job/application
+  interviewDate: string;        // Date of the interview (in string format, can be a date if needed)
+  interviewTime: string;        // Time of the interview
+  interviewLocation: string;    // Location of the interview (could be a URL or a physical address)
+  isInterviewOnline: boolean;   // Whether the interview is online or not
+  status: 'Scheduled' | 'Completed' | 'Cancelled';  // Status of the interview
+  interviewId: string;          // Unique Interview ID
+  createdAt: string;            // Timestamp when the interview was created
+  updatedAt: string;            // Timestamp when the interview was last updated
+  __v?: number;                 // Mongoose version key, optional
+}
+export interface InterviewEvent {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  applicantId:  User; // User is your user interface
+  applicationName: string;
+  interviewLocation: string;
+  isInterviewOnline: boolean;
+  status: 'Scheduled' | 'Completed' | 'Cancelled';
+}
+
   export interface Resume {
     personalInfo: PersonalInfo;
     _id: string;
@@ -236,16 +261,7 @@ export interface StatusHistory {
   assessment?: Assessment; // Assessment is embedded in the status history
 }
 
-// Interview type
-export interface Interview {
-  interviewDate: string;
-  interviewTime: string;
-  interviewLocation?: string;
-  interviewLink?: string;
-  interviewers: string[];
-  feedback?: string;
-  interviewResult: 'Passed' | 'Failed' | 'Pending';
-}
+
 
 // Notification type
 export interface Notification {
@@ -309,16 +325,22 @@ export interface CreateMatchData {
 
 // Match type: represents the result of a single match
 export interface Match {
+  _id: string;
+  userId: string;
+  resumeId: Resume;
+  jobId: Job;
   matchScore: number;
   explanation: string;
-  matchedJob?: Job;
+  createdAt: string;
+  __v: number;
 }
+
 
 // MatchDetail type: detailed information about the match
 export interface MatchDetail {
   userId: string;
   resumeId: string;
-  jobId: string;
+  jobId: Job;
   matchScore: number;
   explanation: string;
   _id: string;

@@ -208,12 +208,6 @@ router.put('/:applicationId/reviewer', authenticateToken, applicationController.
  *                     type: string
  *                   interviewLocation:
  *                     type: string
- *                   interviewers:
- *                     type: array
- *                     items:
- *                       type: string
- *                   feedback:
- *                     type: string
  *             required:
  *               - interviewDate
  *               - interviewTime

@@ -36,39 +36,6 @@ const assessmentResultSchema = new mongoose.Schema({
   },
 });
 
-// Interview Schema
-const interviewSchema = new mongoose.Schema({
-  interviewDate: {
-    type: Date,
-    required: true,
-  },
-  interviewTime: {
-    type: String,
-    required: true,
-  },
-  interviewLocation: {
-    type: String,
-    trim: true,
-  },
-  interviewLink: {
-    type: String,
-    trim: true,
-    match: [/^https?:\/\/[^\s$.?#].[^\s]*$/, 'Please provide a valid URL'],
-  },
-  interviewers: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  }],
-  feedback: {
-    type: String,
-    trim: true,
-  },
-  interviewResult: {
-    type: String,
-    enum: ['Passed', 'Failed', 'Pending'],
-    default: 'Pending',
-  },
-});
 
 // Notification Schema
 const notificationSchema = new mongoose.Schema({
@@ -176,7 +143,11 @@ const jobApplicationSchema = new mongoose.Schema({
     required: false,
   },
   assessments: [assessmentResultSchema], // Global assessments for the application
-  interviews: [interviewSchema],
+  interviews: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Interview',
+    required: false,
+  }], // Array of interviews with details
   notifications: [notificationSchema],
   scoring: {
     type: Number,

@@ -12,7 +12,7 @@ import JobsTable  from '@/components/admin-panel/vacancy/vacancy-table';
 
 export default function CompaniesPage() {
     return (
-        <ContentLayout title="Companies">
+        <ContentLayout title="Vacancies">
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>

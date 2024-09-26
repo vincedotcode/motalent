@@ -1,6 +1,8 @@
 import JobApplication from '../models/Application.js';
+import Interview from '../models/Interview.js';
 import Job from '../models/Job.js';
-import User from '../models/User.js';  // Import the User model
+import User from '../models/User.js';
+
 
 // Create a new job application
 const createJobApplication = async (userId, jobId, resumeId, comments) => {
@@ -85,14 +87,46 @@ const assignReviewerToApplication = async (applicationId, reviewerId) => {
     return application;
 };
 
-// Add an interview to the application
 const addInterviewToApplication = async (applicationId, interviewDetails) => {
-    const application = await JobApplication.findById(applicationId);
+    // Find the job application
+    const application = await JobApplication.findById(applicationId).populate('job').populate('applicant');
+
     if (!application) {
         throw new Error('Application not found');
     }
-    await application.addInterview(interviewDetails);
-    return application;
+
+    // Check if the interview location is a valid URL to determine if the interview is online
+    const isOnline = /^https?:\/\/[^\s$.?#].[^\s]*$/.test(interviewDetails.interviewLocation);
+
+    // Fetch job and user details for the interview
+    const job = await Job.findById(application.job);
+    const user = await User.findById(application.applicant);
+
+    if (!job || !user) {
+        throw new Error('Job or Applicant not found');
+    }
+
+    // Create the new interview document
+    const interview = new Interview({
+        applicantId: application.applicant._id,  // Reference to the applicant
+        applicationName: job.title,  // Use job title as the application name
+        interviewDate: interviewDetails.interviewDate,
+        interviewTime: interviewDetails.interviewTime,
+        interviewLocation: interviewDetails.interviewLocation,
+        isInterviewOnline: isOnline,
+        status: 'Scheduled',
+    });
+
+    // Save the interview in the Interview table
+    const savedInterview = await interview.save();
+
+    // Link the interview to the application by pushing the interview ID into the application's interviews array
+    application.interviews.push(savedInterview._id);
+
+    // Save the updated application
+    await application.save();
+
+    return { application, interview: savedInterview };
 };
 
 // Get applications by user
@@ -110,7 +144,8 @@ const getApplicationById = async (applicationId) => {
     const application = await JobApplication.findById(applicationId)
         .populate('applicant')
         .populate('job')
-        .populate('resume');
+        .populate('resume')
+        .populate('interviews')
 
     if (!application) {
         throw new Error('Application not found');

@@ -65,7 +65,7 @@ const addInterviewToApplication = async (req, res) => {
 
         const {  interviewDetails } = req.body;
 
-        const application = await applicationService.addInterviewToApplication(applicationId, interviewDetails);
+        const application = await applicationService.addInterviewToApplication(appplicationid, interviewDetails);
         res.json(application);
     } catch (error) {
         res.status(400).json({ message: error.message });

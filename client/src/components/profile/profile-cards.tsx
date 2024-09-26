@@ -13,7 +13,7 @@ interface ProfileCardItem {
 
 export function ProfileCards({ items }: { items: ProfileCardItem[] }) {
     return (
-        <div className="max-w-5xl mx-auto px-8 grid gap-6 grid-cols-1 md:grid-cols-3">
+        <div className="max-w-5xl mx-auto px-8 grid gap-6 grid-cols-1 md:grid-cols-2">
             {items.map((item, index) => (
                 <Link href={item.link} key={index} className="block h-full">
                     <ProfileCard item={item} />

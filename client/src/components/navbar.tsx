@@ -40,6 +40,11 @@ export default function Navbar() {
                                 </Link>
                             </li>
                             <li>
+                                <Link href="/chat" passHref className="block py-2 px-4 hover:bg-primary-foreground rounded-sm">
+                                    Chat
+                                </Link>
+                            </li>
+                            <li>
                                 <Link href="/contact" passHref className="block py-2 px-4 hover:bg-primary-foreground rounded-sm">
                                     Contact Us
                                 </Link>

@@ -14,6 +14,7 @@ import templateRoutes from './routes/Template.js';
 import resumeRoutes from './routes/Resume.js';
 import applicationRoutes from './routes/Application.js';
 import matchingRoutes from './routes/Matching.js';
+import InterviewRoutes from './routes/Interview.js';
 import config from './config/index.js';
 
 const app = express();
@@ -65,7 +66,7 @@ app.use('/api/templates', templateRoutes);
 app.use('/api/resumes', resumeRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/matching', matchingRoutes);
-
+app.use('/api/interviews', InterviewRoutes);
 
 
 const PORT = process.env.PORT || 8080;

@@ -14,18 +14,8 @@ export const projects = [
     link: "/profile/applications",
     icon: Briefcase,
   },
-  {
-    title: "Events",
-    description: "View and register for upcoming events and workshops.",
-    link: "/events",
-    icon: Calendar,
-  },
-  {
-    title: "Profile Settings",
-    description: "Manage your personal information, account settings, and privacy preferences.",
-    link: "/profile-settings",
-    icon: Settings,
-  },
+ 
+  
   {
     title: "Worker's Rights",
     description: "Learn about your rights as a worker and how to protect yourself in the workplace.",
