@@ -15,6 +15,7 @@ import resumeRoutes from './routes/Resume.js';
 import applicationRoutes from './routes/Application.js';
 import matchingRoutes from './routes/Matching.js';
 import InterviewRoutes from './routes/Interview.js';
+import ChatRoutes from './routes/Chat.js';
 import config from './config/index.js';
 
 const app = express();
@@ -67,7 +68,7 @@ app.use('/api/resumes', resumeRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/matching', matchingRoutes);
 app.use('/api/interviews', InterviewRoutes);
-
+app.use('/api/ai', ChatRoutes);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -6,17 +6,17 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart, Calendar, DollarSign, MapPin, Users } from "lucide-react"
-import { Bar, BarChart as RechartsBarChart, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
+import { Bar, BarChart as RechartsBarChart, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getJobById } from "@/services/job"
-import { Job } from "@/helper/types"
+import { Job, JobApplication } from "@/helper/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link"
 import { ModeToggle } from "@/helper/darkmode"
 import { ChevronLeft } from "lucide-react"
 import ApplicationModal from "@/components/admin-panel/vacancy/application-admin-modal"
-
+import { getJobApplicationsByJobId } from "@/services/application"
 
 const funnelData = [
     { name: 'Total Applicants', value: 45 },
@@ -26,26 +26,19 @@ const funnelData = [
     { name: 'Offers Accepted', value: 3 },
 ]
 
-const sourcesData = [
-    { name: 'Job Board', value: 20 },
-    { name: 'Company Website', value: 15 },
-    { name: 'Employee Referral', value: 5 },
-    { name: 'LinkedIn', value: 3 },
-    { name: 'Other', value: 2 },
-]
-
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
 
 export default function AdminVacancyView() {
     const { id } = useParams();
     const [vacancy, setVacancy] = useState<Job | null>(null);
+    const [applications, setApplications] = useState<JobApplication[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState("overview")
 
-
     useEffect(() => {
         if (id) {
+            // Fetch job details
             getJobById(id as string)
                 .then((data) => {
                     setVacancy(data);
@@ -54,6 +47,15 @@ export default function AdminVacancyView() {
                 .catch((err) => {
                     setError(err.message);
                     setLoading(false);
+                });
+
+            // Fetch job applications
+            getJobApplicationsByJobId(id as string)
+                .then((data) => {
+                    setApplications(data);
+                })
+                .catch((err) => {
+                    setError(err.message);
                 });
         }
     }, [id]);
@@ -71,6 +73,35 @@ export default function AdminVacancyView() {
     }
 
     const { company } = vacancy;
+
+    // Analytics
+    const totalApplicants = applications.length;
+    const interviewScheduled = applications.filter(app => app.currentStatus === "Interview Scheduled").length;
+    const offersExtended = applications.filter(app => app.currentStatus === "Offer Extended").length;
+
+    const experienceBreakdown = {
+        "0-2 years": applications.filter(app => app.resume.experience.length <= 2).length,
+        "3-5 years": applications.filter(app => app.resume.experience.length >= 3 && app.resume.experience.length <= 5).length,
+        "6+ years": applications.filter(app => app.resume.experience.length > 5).length
+    };
+
+    const skillsCount: { [key: string]: number } = {};
+
+    applications.forEach(app => {
+        // Check if the resume and skills array exist
+        if (app.resume?.skills) {
+            app.resume.skills.forEach(skill => {
+                // Increment the skill count or initialize it if not present
+                skillsCount[skill] = (skillsCount[skill] || 0) + 1;
+            });
+        }
+    });
+
+    // Get the top 5 skills by sorting the entries
+    const topSkills = Object.entries(skillsCount)
+        .sort((a, b) => (b[1] as number) - (a[1] as number))
+        .slice(0, 5)
+        .map(([skill, count]) => ({ skill, count: count as number }));
 
     return (
         <div className="container mx-auto py-8">
@@ -233,7 +264,6 @@ export default function AdminVacancyView() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Name</TableHead>
-                                       
                                         <TableHead>Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
@@ -249,9 +279,8 @@ export default function AdminVacancyView() {
                                                     <span>{applicant.applicantName}</span>
                                                 </div>
                                             </TableCell>
-                                            
                                             <TableCell>
-                                                <ApplicationModal applicationId={applicant.applicationId}  />
+                                                <ApplicationModal applicationId={applicant.applicationId} />
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -276,17 +305,24 @@ export default function AdminVacancyView() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {funnelData.map((item, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell>{item.name}</TableCell>
-                                            <TableCell>{item.value}</TableCell>
-                                        </TableRow>
-                                    ))}
+                                    <TableRow>
+                                        <TableCell>Total Applicants</TableCell>
+                                        <TableCell>{totalApplicants}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Interviews Scheduled</TableCell>
+                                        <TableCell>{interviewScheduled}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Offers Extended</TableCell>
+                                        <TableCell>{offersExtended}</TableCell>
+                                    </TableRow>
                                 </TableBody>
                             </Table>
                         </CardContent>
                     </Card>
                     <div className="grid gap-6 mt-6 md:grid-cols-2">
+                        {/* Application Funnel */}
                         <Card>
                             <CardHeader>
                                 <CardTitle>Application Funnel</CardTitle>
@@ -302,40 +338,34 @@ export default function AdminVacancyView() {
                                 </ResponsiveContainer>
                             </CardContent>
                         </Card>
+
+                        {/* Top Skills */}
                         <Card>
                             <CardHeader>
-                                <CardTitle>Application Sources</CardTitle>
+                                <CardTitle>Top Skills</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <PieChart>
-                                        <Pie
-                                            data={sourcesData}
-                                            cx="50%"
-                                            cy="50%"
-                                            labelLine={false}
-                                            outerRadius={80}
-                                            fill="#8884d8"
-                                            dataKey="value"
-                                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                        >
-                                            {sourcesData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip />
-                                    </PieChart>
-                                </ResponsiveContainer>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Skill</TableHead>
+                                            <TableHead>Count</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {topSkills.map(({ skill, count }) => (
+                                            <TableRow key={skill}>
+                                                <TableCell>{skill}</TableCell>
+                                                <TableCell>{count}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
                             </CardContent>
                         </Card>
                     </div>
                 </TabsContent>
             </Tabs>
-
-            <div className="mt-8 flex justify-end space-x-4">
-                <Button variant="outline">Edit Vacancy</Button>
-                <Button variant="destructive">Close Vacancy</Button>
-            </div>
         </div>
     )
 }

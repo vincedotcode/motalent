@@ -360,3 +360,13 @@ export interface MatchResponse {
   matchedJobs: MatchedJob[]; // List of matched jobs (can be empty if no matches)
   explanation: string; // Explanation for no matches
 }
+
+export interface ChatRequest {
+  query: string;
+}
+
+export interface ChatResponse {
+  role: string;
+  content: string;
+  refusal: string | null;
+}
