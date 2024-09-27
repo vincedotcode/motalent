@@ -56,12 +56,11 @@ const generateMatchScore = async (resume, jobs) => {
 
     try {
         const aiResponse = await openai.chat.completions.create({
-            model: 'gpt-4o-mini', // Ensure this is the correct model name
+            model: 'gpt-4o-mini', 
             messages: [{ role: 'user', content: prompt }],
-            temperature: 0, // Set temperature to 0 for deterministic responses
+            temperature: 0, 
         });
 
-        // Log the entire AI response for debugging
         console.log(`AI Full Response:`, JSON.stringify(aiResponse, null, 2));
 
         if (
@@ -100,7 +99,6 @@ const generateMatchScore = async (resume, jobs) => {
     return null;
 };
 
-// Function to filter jobs, generate AI match scores, and save the best match
 const filterAndMatchJobs = async (userId, resumeId) => {
     try {
         // Fetch user's resume
@@ -116,7 +114,6 @@ const filterAndMatchJobs = async (userId, resumeId) => {
         const existingMatches = await Match.find({ userId }).select('jobId');
         const matchedJobIds = existingMatches.map(match => match.jobId.toString());
 
-        // Filter out jobs that have already been matched
         const unmatchedJobs = jobs.filter(job => !matchedJobIds.includes(job._id.toString()));
 
         if (unmatchedJobs.length === 0) {
@@ -126,13 +123,10 @@ const filterAndMatchJobs = async (userId, resumeId) => {
 
         console.log(`Found ${unmatchedJobs.length} unmatched job(s) for User ID: ${userId}`);
 
-        // Generate AI match score and insights for all unmatched jobs
         const matchResult = await generateMatchScore(resume, unmatchedJobs);
 
-        // Log the match result
         console.log(`Match Result:`, matchResult);
 
-        // Check if AI found a best match
         if (
             matchResult &&
             matchResult.matchedJob &&
