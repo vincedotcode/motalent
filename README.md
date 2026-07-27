@@ -2,7 +2,7 @@
 
 **An end-to-end recruitment platform — post vacancies, source candidates, and run hiring from application through to offer.**
 
-> ⚠️ **Demo link check:** `motalent-liart.vercel.app` did not respond when this README was written. Confirm the deployment is up, then add the link back here and in the repo's About section — or remove the stale URL from the repo settings.
+> ⚠️ **Demo link check:** `https://motalentmu.vercel.app/` did not respond when this README was written. Confirm the deployment is up, then add the link back here and in the repo's About section — or remove the stale URL from the repo settings.
 
 ---
 
